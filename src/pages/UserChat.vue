@@ -2,31 +2,41 @@
   <q-layout>
     <q-header>
       <q-toolbar>
+      <q-btn flat round dense icon="menu" @click="toggleDrawer"></q-btn>
         <q-toolbar-title>
-          Low Cost GeneratedAI
+          {{$t('app_name')}}
         </q-toolbar-title>
         <q-btn flat round dense icon="person_add" @click="newChat" label="New Chat"></q-btn>
-        <q-btn flat round dense icon="logout" @click="logout" label="ログアウト"></q-btn>
+        <q-btn flat round dense icon="logout" @click="logout" label="Logout"></q-btn>
+
       </q-toolbar>
-      <div id="buttons" class="q-mb-md">
-		<q-btn
-		  v-for="(layer, index) in layers"
-		  :key="index"
-		  :text-color="index === activeLayer ? 'black' : 'grey-7'"
-		  :color="index === activeLayer ? 'white' : 'black'"
-		  @click="showLayer(index)"
-		>
-		  {{ layer }}
-		</q-btn>
-      </div>
     </q-header>
+
+  <q-drawer v-model="drawer" show-if-above :width="200" :breakpoint="500">
+    <q-scroll-area class="fit">
+      <q-list padding class="menu-list">
+        <q-item
+          v-for="(layer, index) in layers"
+          :key="'layer-' + index"
+          clickable
+          v-ripple
+          @click="showLayer(index)"
+          :class="{ 'active-item': index === activeLayer }"
+        >
+          <q-item-section>
+            {{ layer }}
+          </q-item-section>
+        </q-item>
+      </q-list>
+    </q-scroll-area>
+  </q-drawer>
     <q-page-container>
       <q-page class="page-container">
         <div
           v-for="(layer, index) in layers"
           :key="index"
           v-show="index === activeLayer"
-          class="layer q-pa-md"
+          :class="`layer q-pa-md ${drawer ? 'drawer-open' : 'drawer-closed'}`"
         >
           <div class="chat-history">
             <div
@@ -57,6 +67,9 @@
                 <q-btn icon="send" @click="sendMessage(index)" flat></q-btn>
               </template>
             </q-input>
+	          <div class="input-notice">
+	            {{$t('warning_message')}}
+	          </div>
           </div>
         </div>
       </q-page>
@@ -76,17 +89,22 @@ export default {
       chatHistory: [],
       inputFields: [],
       activeLayer: 0,
+      drawer: false,
     };
   },
   created() {
     this.createLayers();
   },
   methods: {
+    toggleDrawer() {
+      this.drawer = !this.drawer;
+    },
     newChat() {
       this.layers.push('next AI');
       this.chatHistory.push([]);
       this.inputFields.push('');
       this.activeLayer = this.layers.length - 1;
+      this.drawer = true; // ドロワーをオープンにする
     },
     logout() {
       localStorage.removeItem('user-token');
@@ -133,9 +151,10 @@ export default {
 }
 
 .layer {
+
   display: flex;
   flex-direction: column;
-  height: 90vh;
+  height: 95vh;
   border: 1px solid #ccc;
   position: fixed;
   bottom: 0;
@@ -185,6 +204,7 @@ export default {
 }
 
 .page-container{
+
 }
 
 textarea {
@@ -195,5 +215,33 @@ textarea {
 }
 .q-btn {
   margin-right: 10px;
+}
+.drawer-open {
+  width: calc(100% - 200px); /* ドロワーが開いているときの幅 */
+}
+
+.drawer-closed {
+  width: 100%; /* ドロワーが閉じているときの幅 */
+}
+.active-item {
+  color: orange;
+  font-weight: bold; /* テキストを太字に */
+  text-transform: uppercase; /* テキストを大文字に */
+}
+
+.menu-list .q-item {
+  border-bottom: 1px solid #e0e0e0; /* アイテム間の境界線 */
+  /* その他のスタイル設定 */
+}
+
+.menu-list .q-item:hover {
+  cursor: pointer;
+}
+
+.input-notice {
+  font-size: 12px; /* 小さなフォントサイズ */
+  color: #666; /* 暗めのテキストカラー */
+  margin-top: 5px; /* 入力エリアからのマージン */
+  text-align: center; /* 中央揃え */
 }
 </style>

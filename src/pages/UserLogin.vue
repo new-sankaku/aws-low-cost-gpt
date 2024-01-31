@@ -1,24 +1,49 @@
 <template>
-
   <div class="container login q-pa-md q-gutter-sm">
     <form>
       <div class="q-mb-md">
         <label for="inputEmail">Mail Address</label>
-        <q-input filled v-model="inputEmail" id="inputEmail" type="email" placeholder="email@example.com"></q-input>
+        <q-input filled v-model="inputEmail" id="inputEmail" type="email" placeholder="email@example.com" class="custom-input">
+          <template v-slot:prepend>
+            <q-icon name="mail_outline" />
+          </template>
+        </q-input>
       </div>
       <div class="q-mb-md">
         <label for="inputPassword">Password</label>
-        <q-input filled v-model="inputPassword" id="inputPassword" type="password" placeholder="●●●●●●"></q-input>
+        <q-input filled v-model="inputPassword" id="inputPassword" type="password" placeholder="●●●●●●" class="custom-input">
+          <template v-slot:prepend>
+            <q-icon name="lock_outline" />
+          </template>
+        </q-input>
       </div>
-      <q-btn @click.prevent="login" label="Login" color="primary" class="full-width"></q-btn>
+      <q-btn @click.prevent="login" label="Login" color="primary" class="full-width custom-button"></q-btn>
     </form>
+    <br>
+    <q-select
+	    v-model="locale"
+	    :options="localeOptions"
+	    label="Quasar Language"
+	    dense
+	    borderless
+	    emit-value
+	    map-options
+	    options-dense
+	    @input="changeLocale"
+	    style="min-width: 150px"
+	/>
   </div>
+  
+  
 </template>
+
 
 <script>
 
 import { useRouter } from 'vue-router'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import {
   CognitoUserPool,
   CognitoUser,
@@ -27,14 +52,19 @@ import {
 
 export default {
   name: 'UserLogin',
+  methods: {
+    changeLocale() {
+      // 選択したロケールに基づいてi18nのロケールを変更
+      this.$q.i18n.setLocale(this.selectedLocale);
+    },
+  },
   setup() {
-  
-  const router = useRouter()
-   console.log('router:', router);
-   
+    const { locale } = useI18n({ useScope: 'global' });
+    
+    const router = useRouter()
+    console.log('router:', router);
     const inputEmail = ref('')
     const inputPassword = ref('')
-
     const login = async () => {
     
     console.log('UserPoolId:', process.env.VUE_APP_POOL_ID);
@@ -80,7 +110,12 @@ export default {
     return {
       inputEmail,
       inputPassword,
-      login
+      login,
+      locale,
+      localeOptions: [
+        { value: 'en-US', label: 'English' },
+        { value: 'ja-JP', label: '日本語' }
+      ]
     }
   }
 }
