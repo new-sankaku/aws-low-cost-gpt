@@ -1,75 +1,125 @@
 <template>
-  <div class="container login q-pa-md q-gutter-sm">
-    <form>
-      <div class="q-mb-md">
+  <div class="container login">
+    <div
+      class="q-pa-sm logo"
+      style="
+        margin-bottom: 0px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <img
+        width="75"
+        height="75"
+        src="../assets/logo.svg"
+        alt="Logo"
+        class="logo"
+      />
+      <label>Low cost AI</label>
+    </div>
+    <form @submit.prevent="login">
+      <div class="form-group">
         <label for="inputEmail">Mail Address</label>
-        <q-input filled v-model="inputEmail" id="inputEmail" type="email" placeholder="email@example.com" class="custom-input">
+        <q-input
+          filled
+          v-model="inputEmail"
+          id="inputEmail"
+          type="email"
+          placeholder="email@example.com"
+          class="custom-input"
+        >
           <template v-slot:prepend>
             <q-icon name="mail_outline" />
           </template>
         </q-input>
       </div>
-      <div class="q-mb-md">
+      <div class="form-group">
         <label for="inputPassword">Password</label>
-        <q-input filled v-model="inputPassword" id="inputPassword" type="password" placeholder="●●●●●●" class="custom-input">
+        <q-input
+          filled
+          label="Uppe/Lower Char,Num,Special,Min12"
+          v-model="inputPassword"
+          id="inputPassword"
+          type="password"
+          placeholder="●●●●●●"
+          class="custom-input"
+        >
           <template v-slot:prepend>
             <q-icon name="lock_outline" />
           </template>
         </q-input>
       </div>
-      <q-btn @click.prevent="login" label="Login" color="primary" class="full-width custom-button"></q-btn>
+      <q-btn label="Login" type="submit" color="primary" class="full-width" />
     </form>
-    <br>
-    <q-select
-	    v-model="locale"
-	    :options="localeOptions"
-	    label="Quasar Language"
-	    dense
-	    borderless
-	    emit-value
-	    map-options
-	    options-dense
-	    @input="changeLocale"
-	    style="min-width: 150px"
-	/>
+    <div class="language-select" style="margin-top: 70px">
+      <q-select
+        v-model="locale"
+        :options="localeOptions"
+        label="Language"
+        dense
+        filled
+        borderless
+        emit-value
+        map-options
+        options-dense
+        @update:modelValue="changeLocale"
+        style="min-width: 150px"
+      >
+        <template v-slot:prepend>
+          <q-icon name="language" />
+        </template>
+      </q-select>
+    </div>
   </div>
-  
-  
 </template>
 
-
 <script>
-
-import { useRouter } from 'vue-router'
-import { ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-
+import { useRouter } from "vue-router";
+import { ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import {
   CognitoUserPool,
   CognitoUser,
-  AuthenticationDetails
-} from 'amazon-cognito-identity-js'
+  AuthenticationDetails,
+} from "amazon-cognito-identity-js";
 
 export default {
-  name: 'UserLogin',
-  methods: {
-    changeLocale() {
-      // 選択したロケールに基づいてi18nのロケールを変更
-      this.$q.i18n.setLocale(this.selectedLocale);
-    },
-  },
+  name: "UserLogin",
   setup() {
-    const { locale } = useI18n({ useScope: 'global' });
-    
-    const router = useRouter()
-    console.log('router:', router);
-    const inputEmail = ref('')
-    const inputPassword = ref('')
+    const router = useRouter();
+    const { locale } = useI18n({ useScope: "global" });
+    const inputEmail = ref("");
+    const inputPassword = ref("");
+    const selectedLocale = ref(
+      findMatchingLocale(navigator.language || "en-US")
+    );
+    const localeOptions = [
+      { value: "en-US", label: "English" },
+      { value: "ja-JP", label: "日本語" },
+    ];
+
+    watch(selectedLocale, (newLocale) => {
+      locale.value = newLocale;
+    });
+
+    const changeLocale = (newLocale) => {
+      selectedLocale.value = newLocale;
+    };
+
     const login = async () => {
-    
-    console.log('UserPoolId:', process.env.VUE_APP_POOL_ID);
-    console.log('ClientId:', process.env.VUE_APP_CLIENT_ID);
-  
+      var pool = process.env.VUE_APP_POOL_ID;
+      var client = process.env.VUE_APP_CLIENT_ID;
+
+      if (pool == "COGNITO_POOL_ID") {
+        alert($t("userlogin_system_error_not_set_pool_id"));
+        return;
+      }
+      if (client == "COGNITO_CLIENT_ID") {
+        alert($t("userlogin_system_error_not_set_client_id"));
+        return;
+      }
+
       var poolData = {
         UserPoolId: process.env.VUE_APP_POOL_ID,
         ClientId: process.env.VUE_APP_CLIENT_ID,
@@ -84,9 +134,7 @@ export default {
         Username: username,
         Password: password,
       };
-      var authenticationDetails = new AuthenticationDetails(
-        authenticationData
-      );
+      var authenticationDetails = new AuthenticationDetails(authenticationData);
 
       var userData = {
         Username: username,
@@ -95,29 +143,39 @@ export default {
 
       var cognitoUser = new CognitoUser(userData);
       cognitoUser.authenticateUser(authenticationDetails, {
-		onSuccess: function(result) {
-		    console.log('authentication onSuccess');
-		    // トークンをローカルストレージに保存
-		    localStorage.setItem('user-token', result.getIdToken().getJwtToken());
-		    router.push('/UserChat').catch(err => console.error(err));
-		},
-        onFailure: function(err) {
-          console.log('authentication　onFailure');
+        onSuccess: function (result) {
+          console.log("authentication onSuccess");
+          localStorage.setItem("user-token", result.getIdToken().getJwtToken());
+          router.push("/UserChat").catch((err) => console.error(err));
+        },
+        onFailure: function (err) {
+          console.log("authentication　onFailure");
           alert(err.message || JSON.stringify(err));
-        }
+        },
       });
-    }
+    };
+
     return {
       inputEmail,
       inputPassword,
       login,
-      locale,
-      localeOptions: [
-        { value: 'en-US', label: 'English' },
-        { value: 'ja-JP', label: '日本語' }
-      ]
-    }
+      locale: selectedLocale,
+      localeOptions,
+      changeLocale,
+    };
+  },
+};
+
+function findMatchingLocale(userLocale) {
+  const availableLocales = ["en-US", "ja-JP"];
+  if (availableLocales.includes(userLocale)) {
+    return userLocale;
   }
+  const languageOnly = userLocale.split("-")[0];
+  return (
+    availableLocales.find((locale) => locale.startsWith(languageOnly)) ||
+    "en-US"
+  );
 }
 </script>
 
@@ -131,11 +189,53 @@ export default {
   width: 100%;
 }
 
-/* ラベルのスタイリング */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.language-select {
+  margin-top: 1rem;
+}
+
 label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 0.5rem;
   font-weight: bold;
-  color: #555; /* ラベルの色 */
+  color: #555;
+}
+.container.login {
+  max-width: 400px;
+  margin: auto;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.language-select {
+  margin-top: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #555;
+}
+
+/* ロゴスタイル追加 */
+.logo {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* パスワード忘れた場合のリンクスタイル追加 */
+.forgot-password {
+  margin-bottom: 1rem;
+  text-align: right;
 }
 </style>

@@ -2,34 +2,47 @@
   <q-layout>
     <q-header>
       <q-toolbar>
-      <q-btn flat round dense icon="menu" @click="toggleDrawer"></q-btn>
+        <q-btn flat round dense icon="menu" @click="toggleDrawer"></q-btn>
         <q-toolbar-title>
-          {{$t('app_name')}}
+          {{ $t("app_name") }}
         </q-toolbar-title>
-        <q-btn flat round dense icon="person_add" @click="newChat" label="New Chat"></q-btn>
-        <q-btn flat round dense icon="logout" @click="logout" label="Logout"></q-btn>
-
+        <q-btn
+          flat
+          round
+          dense
+          icon="person_add"
+          @click="newChat"
+          label="New Chat"
+        ></q-btn>
+        <q-btn
+          flat
+          round
+          dense
+          icon="logout"
+          @click="logout"
+          label="Logout"
+        ></q-btn>
       </q-toolbar>
     </q-header>
 
-  <q-drawer v-model="drawer" show-if-above :width="200" :breakpoint="500">
-    <q-scroll-area class="fit">
-      <q-list padding class="menu-list">
-        <q-item
-          v-for="(layer, index) in layers"
-          :key="'layer-' + index"
-          clickable
-          v-ripple
-          @click="showLayer(index)"
-          :class="{ 'active-item': index === activeLayer }"
-        >
-          <q-item-section>
-            {{ layer }}
-          </q-item-section>
-        </q-item>
-      </q-list>
-    </q-scroll-area>
-  </q-drawer>
+    <q-drawer v-model="drawer" show-if-above :width="200" :breakpoint="500">
+      <q-scroll-area class="fit">
+        <q-list padding class="menu-list">
+          <q-item
+            v-for="(layer, index) in layers"
+            :key="'layer-' + index"
+            clickable
+            v-ripple
+            @click="showLayer(index)"
+            :class="{ 'active-item': index === activeLayer }"
+          >
+            <q-item-section>
+              {{ layer }}
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-scroll-area>
+    </q-drawer>
     <q-page-container>
       <q-page class="page-container">
         <div
@@ -46,7 +59,10 @@
             >
               <div
                 class="message-icon"
-                :class="{ 'ai-icon': message.sender === 'ai', 'user-icon': message.sender === 'user' }"
+                :class="{
+                  'ai-icon': message.sender === 'ai',
+                  'user-icon': message.sender === 'user',
+                }"
               ></div>
               <span v-html="formatMessage(message.text)"></span>
             </div>
@@ -67,9 +83,9 @@
                 <q-btn icon="send" @click="sendMessage(index)" flat></q-btn>
               </template>
             </q-input>
-	          <div class="input-notice">
-	            {{$t('warning_message')}}
-	          </div>
+            <div class="input-notice">
+              {{ $t("warning_message") }}
+            </div>
           </div>
         </div>
       </q-page>
@@ -77,13 +93,15 @@
   </q-layout>
 </template>
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
       layers: [
-        'Layer 1234567891',
-        'Layer 2',
-        'Layer 3',
+        "Layer 1234567891",
+        "Layer 2",
+        "Layer 3",
         // 他のレイヤー...
       ],
       chatHistory: [],
@@ -100,26 +118,26 @@ export default {
       this.drawer = !this.drawer;
     },
     newChat() {
-      this.layers.push('next AI');
+      this.layers.push("next AI");
       this.chatHistory.push([]);
-      this.inputFields.push('');
+      this.inputFields.push("");
       this.activeLayer = this.layers.length - 1;
       this.drawer = true; // ドロワーをオープンにする
     },
     logout() {
-      localStorage.removeItem('user-token');
-      this.$router.push('/');
+      localStorage.removeItem("user-token");
+      this.$router.push("/");
     },
     processKeydown(index, event) {
       if (event.shiftKey && event.keyCode === 13) {
         event.preventDefault();
-        this.inputFields[index] += '\r\n';
+        this.inputFields[index] += "\r\n";
       }
     },
     createLayers() {
       this.layers.forEach((_, index) => {
         this.chatHistory.push([]);
-        this.inputFields.push('');
+        this.inputFields.push("");
       });
     },
     showLayer(index) {
@@ -127,18 +145,26 @@ export default {
     },
     sendMessage(index) {
       const inputField = this.inputFields[index];
-      if (inputField.trim() === '') return;
-      this.chatHistory[index].push({ text: inputField, sender: 'user' });
-      this.inputFields[index] = '';
+      if (inputField.trim() === "") return;
+      this.chatHistory[index].push({ text: inputField, sender: "user" });
+      this.inputFields[index] = "";
+
+      const apiEndpoint = process.env.VUE_APP_API_ENDPOINT;
+      axios
+        .get(`${apiEndpoint}/users`)
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     formatMessage(text) {
-      return text.replace(/\r\n/g, '<br>').replace(/\n/g, '<br>');
+      return text.replace(/\r\n/g, "<br>").replace(/\n/g, "<br>");
     },
   },
 };
 </script>
-
-
 
 <style scoped>
 #buttons {
@@ -147,11 +173,9 @@ export default {
   overflow-x: auto;
   overflow-y: hidden;
   align-items: center;
-  
 }
 
 .layer {
-
   display: flex;
   flex-direction: column;
   height: 95vh;
@@ -203,8 +227,7 @@ export default {
   align-items: center;
 }
 
-.page-container{
-
+.page-container {
 }
 
 textarea {
@@ -243,5 +266,15 @@ textarea {
   color: #666; /* 暗めのテキストカラー */
   margin-top: 5px; /* 入力エリアからのマージン */
   text-align: center; /* 中央揃え */
+}
+
+.drawer-closed-bar {
+  position: fixed; /* バーを固定表示 */
+  left: 0;
+  bottom: 0;
+  width: 40px; /* バーの幅を指定 */
+  height: 4px; /* バーの高さを指定 */
+  background-color: #ccc; /* バーの色を指定 */
+  z-index: 1; /* バーをコンテンツの上に重ねる */
 }
 </style>
