@@ -1,3 +1,3 @@
 cd aws-low-cost-gpt-client
-call npm run build
+call npm install
 cmd /k echo end.
