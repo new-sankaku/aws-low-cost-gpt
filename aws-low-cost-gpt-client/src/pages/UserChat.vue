@@ -183,7 +183,6 @@ export default {
           this.chatHistory = chatRooms.map(() => []);
           this.inputFields = chatRooms.map(() => "");
 
-          // アクティブな Layer（Room）があるかチェックして、あればメッセージをフェッチする
           if (
             this.activeLayer !== undefined &&
             this.activeLayer !== null &&
