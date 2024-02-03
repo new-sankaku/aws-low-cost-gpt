@@ -105,11 +105,15 @@ export default {
 
     const changeLocale = (newLocale) => {
       selectedLocale.value = newLocale;
+      locale.value = newLocale;
     };
+    changeLocale(selectedLocale.value);
 
     const login = async () => {
       var pool = process.env.VUE_APP_POOL_ID;
       var client = process.env.VUE_APP_CLIENT_ID;
+
+      console.log("selectedLocale:", selectedLocale.value);
 
       if (pool == "COGNITO_POOL_ID") {
         alert($t("userlogin_system_error_not_set_pool_id"));
@@ -227,14 +231,10 @@ label {
   font-weight: bold;
   color: #555;
 }
-
-/* ロゴスタイル追加 */
 .logo {
   text-align: center;
   margin-bottom: 2rem;
 }
-
-/* パスワード忘れた場合のリンクスタイル追加 */
 .forgot-password {
   margin-bottom: 1rem;
   text-align: right;

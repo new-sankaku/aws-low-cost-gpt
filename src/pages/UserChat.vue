@@ -26,7 +26,11 @@
     </q-header>
 
     <q-drawer v-model="drawer" show-if-above :width="200" :breakpoint="500">
-      <q-scroll-area class="fit">
+      <q-scroll-area
+        class="fit"
+        :thumb-style="thumbStyle"
+        :bar-style="barStyle"
+      >
         <q-list padding class="menu-list">
           <q-item
             v-for="(layer, index) in layers"
@@ -37,7 +41,7 @@
             :class="{ 'active-item': index === activeLayer }"
           >
             <q-item-section>
-              {{ layer }}
+              {{ layer.title }}
             </q-item-section>
           </q-item>
         </q-list>
@@ -51,26 +55,33 @@
           v-show="index === activeLayer"
           :class="`layer q-pa-md ${drawer ? 'drawer-open' : 'drawer-closed'}`"
         >
-          <div class="chat-history">
-            <div
-              v-for="(message, messageIndex) in chatHistory[index]"
-              :key="messageIndex"
-              class="message"
-              :class="{
-                'user-message': message.sender === 'user',
-                'ai-message': message.sender === 'ai',
-              }"
-            >
+          <q-scroll-area
+            :thumb-style="thumbStyle"
+            :bar-style="barStyle"
+            style="height: 100vh"
+          >
+            <div class="chat-history q-pt-md">
               <div
-                class="message-icon"
+                v-for="(message, messageIndex) in chatHistory[index]"
+                :key="messageIndex"
+                class="message q-pa-md"
                 :class="{
-                  'ai-icon': message.sender === 'ai',
-                  'user-icon': message.sender === 'user',
+                  'user-message': message.sender === 'user',
+                  'ai-message': message.sender === 'ai',
                 }"
-              ></div>
-              <span v-html="formatMessage(message.text)"></span>
+              >
+                <div
+                  class="message-icon"
+                  :class="{
+                    'ai-icon': message.sender === 'ai',
+                    'user-icon': message.sender === 'user',
+                  }"
+                ></div>
+                <span v-html="formatMessage(message.text)"></span>
+              </div>
             </div>
-          </div>
+          </q-scroll-area>
+
           <div class="input-area row items-center">
             <q-input
               v-model="inputFields[index]"
@@ -101,6 +112,25 @@ import axios from "axios";
 import { getData } from "./../api/RestService";
 
 export default {
+  setup() {
+    return {
+      thumbStyle: {
+        right: "4px",
+        borderRadius: "5px",
+        backgroundColor: "#027be3",
+        width: "5px",
+        opacity: 0.75,
+      },
+
+      barStyle: {
+        right: "2px",
+        borderRadius: "9px",
+        backgroundColor: "#027be3",
+        width: "9px",
+        opacity: 0.2,
+      },
+    };
+  },
   data() {
     return {
       layers: [],
@@ -118,7 +148,10 @@ export default {
       this.drawer = !this.drawer;
     },
     newChat() {
-      this.layers.push("next AI");
+      this.layers.push({
+        title: "next AI",
+        roomId: undefined,
+      });
       this.chatHistory.push([]);
       this.inputFields.push("");
       this.activeLayer = this.layers.length - 1;
@@ -143,9 +176,21 @@ export default {
     fetchChatRoomHistory() {
       getData("ChatRoomHistory")
         .then((chatRooms) => {
-          this.layers = chatRooms.map((room) => room.roomTitle);
+          this.layers = chatRooms.map((room) => ({
+            title: room.roomTitle,
+            roomId: room.roomId,
+          }));
           this.chatHistory = chatRooms.map(() => []);
           this.inputFields = chatRooms.map(() => "");
+
+          // アクティブな Layer（Room）があるかチェックして、あればメッセージをフェッチする
+          if (
+            this.activeLayer !== undefined &&
+            this.activeLayer !== null &&
+            this.chatHistory[this.activeLayer].length === 0
+          ) {
+            this.fetchChatMessages(this.activeLayer);
+          }
         })
         .catch((error) =>
           console.error("Error fetching chat room history:", error)
@@ -153,22 +198,29 @@ export default {
     },
     showLayer(index) {
       this.activeLayer = index;
+      const roomId = this.layers[index].roomId;
+      if (roomId !== undefined && this.chatHistory[index].length === 0) {
+        this.fetchChatMessages(index);
+      }
+    },
+    fetchChatMessages(index) {
+      const roomId = this.layers[index].roomId;
+      getData(`ChatRoom/Message/${roomId}`)
+        .then((chatMessages) => {
+          this.chatHistory[index] = chatMessages.map((msg) => ({
+            text: msg.messageBody,
+            sender: msg.sender,
+          }));
+        })
+        .catch((error) => {
+          console.error("Error fetching chat messages:", error);
+        });
     },
     sendMessage(index) {
       const inputField = this.inputFields[index];
       if (inputField.trim() === "") return;
       this.chatHistory[index].push({ text: inputField, sender: "user" });
       this.inputFields[index] = "";
-
-      const apiEndpoint = process.env.VUE_APP_API_ENDPOINT;
-      axios
-        .get(`${apiEndpoint}/users`)
-        .then((response) => {
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
     },
     formatMessage(text) {
       return text.replace(/\r\n/g, "<br>").replace(/\n/g, "<br>");
