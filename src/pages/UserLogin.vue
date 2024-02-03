@@ -127,17 +127,17 @@ export default {
       var userPool = new CognitoUserPool(poolData);
 
       //cognitoパラメータ設定
-      var username = inputEmail.value;
+      var userMailAddress = inputEmail.value;
       var password = inputPassword.value;
 
       var authenticationData = {
-        Username: username,
+        Username: userMailAddress,
         Password: password,
       };
       var authenticationDetails = new AuthenticationDetails(authenticationData);
 
       var userData = {
-        Username: username,
+        Username: userMailAddress,
         Pool: userPool,
       };
 
@@ -146,10 +146,11 @@ export default {
         onSuccess: function (result) {
           console.log("authentication onSuccess");
           localStorage.setItem("user-token", result.getIdToken().getJwtToken());
+          localStorage.setItem("user-mail-address", userMailAddress);
           router.push("/UserChat").catch((err) => console.error(err));
         },
         onFailure: function (err) {
-          console.log("authentication　onFailure");
+          console.log("authentication onFailure");
           alert(err.message || JSON.stringify(err));
         },
       });

@@ -56,6 +56,10 @@
               v-for="(message, messageIndex) in chatHistory[index]"
               :key="messageIndex"
               class="message"
+              :class="{
+                'user-message': message.sender === 'user',
+                'ai-message': message.sender === 'ai',
+              }"
             >
               <div
                 class="message-icon"
@@ -94,16 +98,12 @@
 </template>
 <script>
 import axios from "axios";
+import { getData } from "./../api/RestService";
 
 export default {
   data() {
     return {
-      layers: [
-        "Layer 1234567891",
-        "Layer 2",
-        "Layer 3",
-        // 他のレイヤー...
-      ],
+      layers: [],
       chatHistory: [],
       inputFields: [],
       activeLayer: 0,
@@ -111,7 +111,7 @@ export default {
     };
   },
   created() {
-    this.createLayers();
+    this.fetchChatRoomHistory();
   },
   methods: {
     toggleDrawer() {
@@ -122,7 +122,7 @@ export default {
       this.chatHistory.push([]);
       this.inputFields.push("");
       this.activeLayer = this.layers.length - 1;
-      this.drawer = true; // ドロワーをオープンにする
+      this.drawer = true;
     },
     logout() {
       localStorage.removeItem("user-token");
@@ -139,6 +139,17 @@ export default {
         this.chatHistory.push([]);
         this.inputFields.push("");
       });
+    },
+    fetchChatRoomHistory() {
+      getData("ChatRoomHistory")
+        .then((chatRooms) => {
+          this.layers = chatRooms.map((room) => room.roomTitle);
+          this.chatHistory = chatRooms.map(() => []);
+          this.inputFields = chatRooms.map(() => "");
+        })
+        .catch((error) =>
+          console.error("Error fetching chat room history:", error)
+        );
     },
     showLayer(index) {
       this.activeLayer = index;
@@ -196,6 +207,9 @@ export default {
   align-items: center;
   margin-bottom: 5px;
   flex-wrap: nowrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .message-icon {
@@ -208,26 +222,31 @@ export default {
 
 .message span {
   flex-grow: 1;
+  word-break: break-all;
 }
 
 .ai-icon {
   background-color: #007bff;
   border: 2px solid #0056b3;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .user-icon {
   background-color: #ff4081;
-  border: 2px solid #c60055;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid #c60055;
+}
+
+.user-message {
+  background-color: #faf0e6;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.ai-message {
+  background-color: #fafad2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .input-area {
   display: flex;
   align-items: center;
-}
-
-.page-container {
 }
 
 textarea {
@@ -240,21 +259,20 @@ textarea {
   margin-right: 10px;
 }
 .drawer-open {
-  width: calc(100% - 200px); /* ドロワーが開いているときの幅 */
+  width: calc(100% - 200px);
 }
 
 .drawer-closed {
-  width: 100%; /* ドロワーが閉じているときの幅 */
+  width: 100%;
 }
 .active-item {
   color: orange;
-  font-weight: bold; /* テキストを太字に */
-  text-transform: uppercase; /* テキストを大文字に */
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
 .menu-list .q-item {
-  border-bottom: 1px solid #e0e0e0; /* アイテム間の境界線 */
-  /* その他のスタイル設定 */
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .menu-list .q-item:hover {
@@ -262,19 +280,19 @@ textarea {
 }
 
 .input-notice {
-  font-size: 12px; /* 小さなフォントサイズ */
-  color: #666; /* 暗めのテキストカラー */
-  margin-top: 5px; /* 入力エリアからのマージン */
-  text-align: center; /* 中央揃え */
+  font-size: 12px;
+  color: #666;
+  margin-top: 5px;
+  text-align: center;
 }
 
 .drawer-closed-bar {
-  position: fixed; /* バーを固定表示 */
+  position: fixed;
   left: 0;
   bottom: 0;
-  width: 40px; /* バーの幅を指定 */
-  height: 4px; /* バーの高さを指定 */
-  background-color: #ccc; /* バーの色を指定 */
-  z-index: 1; /* バーをコンテンツの上に重ねる */
+  width: 40px;
+  height: 4px;
+  background-color: #ccc;
+  z-index: 1;
 }
 </style>
