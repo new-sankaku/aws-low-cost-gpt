@@ -12,13 +12,11 @@ import axios from "axios";
 const API_ENDPOINT = process.env.VUE_APP_API_GATEWAY_ENDPOINT;
 
 function getAxiosConfig(method, path, data = null) {
+  const accessToken = localStorage.getItem("access-token");
   const token = localStorage.getItem("user-token");
   const email = localStorage.getItem("user-mail-address");
 
   const url = `${API_ENDPOINT}${path}`;
-  if (data && (username || email)) {
-    data = { ...data, username, email };
-  }
 
   return {
     method: method,
@@ -27,6 +25,7 @@ function getAxiosConfig(method, path, data = null) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
       "user-mail-address": email,
+      "access-token": accessToken,
     },
     data: data,
   };

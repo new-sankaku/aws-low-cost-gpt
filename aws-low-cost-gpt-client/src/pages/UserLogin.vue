@@ -88,7 +88,7 @@ export default {
   name: "UserLogin",
   setup() {
     const router = useRouter();
-    const { locale } = useI18n({ useScope: "global" });
+    const { t, locale } = useI18n({ useScope: "global" });
     const inputEmail = ref("");
     const inputPassword = ref("");
     const selectedLocale = ref(
@@ -116,11 +116,11 @@ export default {
       console.log("selectedLocale:", selectedLocale.value);
 
       if (pool == "COGNITO_POOL_ID") {
-        alert($t("userlogin_system_error_not_set_pool_id"));
+        alert(t("userlogin_system_error_not_set_pool_id"));
         return;
       }
       if (client == "COGNITO_CLIENT_ID") {
-        alert($t("userlogin_system_error_not_set_client_id"));
+        alert(t("userlogin_system_error_not_set_client_id"));
         return;
       }
 
@@ -149,6 +149,13 @@ export default {
       cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: function (result) {
           console.log("authentication onSuccess");
+          console.log("token", result.getIdToken().getJwtToken());
+          console.log("Access token", result.getAccessToken().getJwtToken());
+
+          localStorage.setItem(
+            "access-token",
+            result.getAccessToken().getJwtToken()
+          );
           localStorage.setItem("user-token", result.getIdToken().getJwtToken());
           localStorage.setItem("user-mail-address", userMailAddress);
           router.push("/UserChat").catch((err) => console.error(err));

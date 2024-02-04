@@ -11,12 +11,14 @@ public class AiModel {
 	private String modelCategory;
 	private String inputFormat;
 	private String outputFormat;
+	private double inputDoller;
+	private double outDoller;
 
 	public AiModel() {
 	}
 
 	public AiModel( String modelId, String modelName, String modelDescription, Date createdDate, int modelVersion,
-			String modelCategory, String inputFormat, String outputFormat ) {
+			String modelCategory, String inputFormat, String outputFormat, double inputDoller, double outDoller ) {
 		this.modelId = modelId;
 		this.modelName = modelName;
 		this.modelDescription = modelDescription;
@@ -25,6 +27,8 @@ public class AiModel {
 		this.modelCategory = modelCategory;
 		this.inputFormat = inputFormat;
 		this.outputFormat = outputFormat;
+		this.inputDoller = inputDoller;
+		this.outDoller = outDoller;
 	}
 
 	public String getModelId() {
@@ -89,6 +93,22 @@ public class AiModel {
 
 	public void setOutputFormat( String outputFormat ) {
 		this.outputFormat = outputFormat;
+	}
+
+	public double getInputDoller() {
+		return this.inputDoller;
+	}
+
+	public void setInputDoller(double inputDoller) {
+		this.inputDoller = inputDoller;
+	}
+
+	public double getOutDoller() {
+		return this.outDoller;
+	}
+
+	public void setOutDoller(double outDoller) {
+		this.outDoller = outDoller;
 	}
 
 }

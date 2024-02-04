@@ -7,23 +7,22 @@ public class ChatMessage {
 	String messageId;
 	//ai or user
 	String sender;
-	//ai or user
-	String recipient;
-	String messageBody;
+	String message;
 	Date sendDate;
-	String messageType;
 
 	public ChatMessage() {
 	}
 
-	public ChatMessage( String messageId, String sender, String recipient, String messageBody, Date sendDate,
-			String messageType ) {
+	public ChatMessage( String sender, String message ) {
+		this.sender = sender;
+		this.message = message;
+	}
+
+	public ChatMessage( String messageId, String sender, String message, Date sendDate ) {
 		this.messageId = messageId;
 		this.sender = sender;
-		this.recipient = recipient;
-		this.messageBody = messageBody;
+		this.message = message;
 		this.sendDate = sendDate;
-		this.messageType = messageType;
 	}
 
 	public String getMessageId() {
@@ -42,22 +41,6 @@ public class ChatMessage {
 		this.sender = sender;
 	}
 
-	public String getRecipient() {
-		return recipient;
-	}
-
-	public void setRecipient( String recipient ) {
-		this.recipient = recipient;
-	}
-
-	public String getMessageBody() {
-		return messageBody;
-	}
-
-	public void setMessageBody( String messageBody ) {
-		this.messageBody = messageBody;
-	}
-
 	public Date getSendDate() {
 		return sendDate;
 	}
@@ -66,12 +49,12 @@ public class ChatMessage {
 		this.sendDate = sendDate;
 	}
 
-	public String getMessageType() {
-		return messageType;
+	public String getMessage() {
+		return this.message;
 	}
 
-	public void setMessageType( String messageType ) {
-		this.messageType = messageType;
+	public void setMessage( String message ) {
+		this.message = message;
 	}
 
 }

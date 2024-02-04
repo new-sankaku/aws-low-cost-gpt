@@ -1,11 +1,25 @@
 <template>
   <q-layout>
-    <q-header>
+    <q-header class="custom-toolbar">
       <q-toolbar>
         <q-btn flat round dense icon="menu" @click="toggleDrawer"></q-btn>
         <q-toolbar-title>
           {{ $t("app_name") }}
         </q-toolbar-title>
+
+        <q-select
+          filled
+          v-model="selectedModel"
+          :options="modelOptions"
+          label="Ai model"
+          class="q-pr-sm custom-selection"
+          @update:modelValue="updateDollerValues"
+        />
+        <div class="q-pr-xl label-container">
+          <label class="custom-label">1K In: ${{ inputDoller }}</label>
+          <label class="custom-label">1K Out: ${{ outDoller }}</label>
+        </div>
+
         <q-btn
           flat
           round
@@ -14,6 +28,7 @@
           @click="newChat"
           label="New Chat"
         ></q-btn>
+
         <q-btn
           flat
           round
@@ -41,7 +56,12 @@
             :class="{ 'active-item': index === activeLayer }"
           >
             <q-item-section>
-              {{ layer.title }}
+              <q-item-label>
+                {{ layer.title }}
+              </q-item-label>
+              <q-item-label caption lines="1">
+                Total ${{ layer.sumTotal }}
+              </q-item-label>
             </q-item-section>
           </q-item>
         </q-list>
@@ -53,14 +73,14 @@
           v-for="(layer, index) in layers"
           :key="index"
           v-show="index === activeLayer"
-          :class="`layer q-pa-md ${drawer ? 'drawer-open' : 'drawer-closed'}`"
+          :class="`layer q-pt-sm ${drawer ? 'drawer-open' : 'drawer-closed'}`"
         >
           <q-scroll-area
             :thumb-style="thumbStyle"
             :bar-style="barStyle"
             style="height: 100vh"
           >
-            <div class="chat-history q-pt-md">
+            <div class="chat-history q-pa-md">
               <div
                 v-for="(message, messageIndex) in chatHistory[index]"
                 :key="messageIndex"
@@ -109,7 +129,9 @@
 </template>
 <script>
 import axios from "axios";
-import { getData } from "./../api/RestService";
+import { getData, postData } from "./../api/RestService";
+import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
 
 export default {
   setup() {
@@ -138,12 +160,59 @@ export default {
       inputFields: [],
       activeLayer: 0,
       drawer: false,
+      selectedModel: null,
+      modelOptions: [],
+      inputDoller: 0.0,
+      outDoller: 0.0,
+      modelsData: [],
     };
   },
   created() {
     this.fetchChatRoomHistory();
   },
+  mounted() {
+    this.fetchUserPlan();
+  },
   methods: {
+    fetchUserPlan() {
+      console.log("fetchUserPlan");
+
+      getData("UsersPlan")
+        .then((data) => {
+          this.modelsData = data;
+          this.modelOptions = data.map((model) => ({
+            label: model.modelName,
+            value: model.modelId,
+          }));
+          if (data.length > 0) {
+            this.inputDoller = data[0].inputDoller;
+            this.outDoller = data[0].outDoller;
+          }
+        })
+        .catch((error) => {
+          console.error("Failed to fetch user plan:", error);
+        });
+    },
+    updateDollerValues() {
+      console.log("updateDollerValues");
+      console.log("this.selectedModel", this.selectedModel);
+      console.log("this.selectedModel.modelId", this.selectedModel.value);
+      const selectedModel = this.modelsData.find(
+        (model) => model.modelId === this.selectedModel.value
+      );
+
+      console.log("Selected Model ID:", selectedModel);
+
+      if (selectedModel) {
+        console.log("if (selectedModel)");
+
+        console.log("inputDoller", selectedModel.inputDoller);
+        console.log("outDoller", selectedModel.outDoller);
+
+        this.inputDoller = selectedModel.inputDoller;
+        this.outDoller = selectedModel.outDoller;
+      }
+    },
     toggleDrawer() {
       this.drawer = !this.drawer;
     },
@@ -179,6 +248,8 @@ export default {
           this.layers = chatRooms.map((room) => ({
             title: room.roomTitle,
             roomId: room.roomId,
+            aiModel: room.aiModel,
+            sumTotal: room.sumTotal,
           }));
           this.chatHistory = chatRooms.map(() => []);
           this.inputFields = chatRooms.map(() => "");
@@ -207,7 +278,7 @@ export default {
       getData(`ChatRoom/Message/${roomId}`)
         .then((chatMessages) => {
           this.chatHistory[index] = chatMessages.map((msg) => ({
-            text: msg.messageBody,
+            text: msg.message,
             sender: msg.sender,
           }));
         })
@@ -215,11 +286,32 @@ export default {
           console.error("Error fetching chat messages:", error);
         });
     },
-    sendMessage(index) {
+    async sendMessage(index) {
       const inputField = this.inputFields[index];
       if (inputField.trim() === "") return;
       this.chatHistory[index].push({ text: inputField, sender: "user" });
       this.inputFields[index] = "";
+
+      try {
+        const chatMessageList = this.chatHistory.flatMap((chatHistoryItem) =>
+          chatHistoryItem.map((chat) => ({
+            sender: chat.sender,
+            message: chat.text,
+          }))
+        );
+
+        console.log("chatMessageList:", chatMessageList);
+        const response = await postData("ChatCompletions", chatMessageList);
+
+        if (response && response.message) {
+          this.chatHistory[index].push({
+            text: response.message,
+            sender: "ai",
+          });
+        }
+      } catch (error) {
+        console.error("Failed to send message:", error);
+      }
     },
     formatMessage(text) {
       return text.replace(/\r\n/g, "<br>").replace(/\n/g, "<br>");
@@ -319,7 +411,6 @@ textarea {
 .active-item {
   color: orange;
   font-weight: bold;
-  text-transform: uppercase;
 }
 
 .menu-list .q-item {
@@ -345,5 +436,22 @@ textarea {
   height: 4px;
   background-color: #ccc;
   z-index: 1;
+}
+
+.custom-toolbar > .q-toolbar {
+  justify-content: center;
+  max-height: 8.5vh;
+}
+.custom-selection {
+  min-width: 300px;
+}
+.label-container .custom-label {
+  color: #ccc;
+  margin-right: 8px;
+  margin-top: 8px;
+  min-width: 5vh;
+  display: flex;
+  flex-direction: column;
+  margin-top: 0px;
 }
 </style>
