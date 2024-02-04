@@ -2,8 +2,6 @@ package com.yksc.dummy.data;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -97,14 +95,14 @@ public class Data {
         AiModel model1 = new AiModel("1", "gpt-3.5-turbo-0125", "Description for Model One", new Date(), 1, "Category A", "JSON", "XML", 0.00001, 0.00005);
         AiModel model2 = new AiModel("2", "gpt-3.5-turbo-16k-0613", "Description for Model Two", new Date(), 2, "Category B", "XML", "JSON", 0.1, 0.00015);
         AiModel model3 = new AiModel("3", "gpt-3.5-turbo-instruct-0914", "Description for Model Three", new Date(), 3, "Category C", "CSV", "CSV", 1.5, 0.00025);
-        AiModel model4 = new AiModel("4", "text-embedding-3-small", "Description for Model Four", new Date(), 4, "Category D", "TEXT", "TEXT", 3.5, 0.00035);
-        AiModel model5 = new AiModel("5", "text-embedding-3-large", "Description for Model Five", new Date(), 5, "Category E", "JSON", "JSON", 10, 0.00045);
+//        AiModel model4 = new AiModel("4", "text-embedding-3-small", "Description for Model Four", new Date(), 4, "Category D", "TEXT", "TEXT", 3.5, 0.00035);
+//        AiModel model5 = new AiModel("5", "text-embedding-3-large", "Description for Model Five", new Date(), 5, "Category E", "JSON", "JSON", 10, 0.00045);
 
 		aiModelMap.put("gpt-3.5-turbo-0125", model1);
 		aiModelMap.put("gpt-3.5-turbo-16k-0613", model2);
-		aiModelMap.put("gpt-3.5-turbo-instruct-0914", model3);
-		aiModelMap.put("text-embedding-3-small", model4);
-		aiModelMap.put("text-embedding-3-large", model5);
+//		aiModelMap.put("gpt-3.5-turbo-instruct-0914", model3);
+//		aiModelMap.put("text-embedding-3-small", model4);
+//		aiModelMap.put("text-embedding-3-large", model5);
 	}
 	
 	private static void addUser( User user ) {
@@ -149,23 +147,23 @@ public class Data {
 		
 		chatRoom.setSumTotal( randDouble );
 
-		ChatMessage chatMessage1 = new ChatMessage();
-		chatMessage1.setMessageId( "msg " + (++dummyChatRoomCount) );
-		chatMessage1.setSender( "user" );
-		chatMessage1.setMessage( "Hello! this is dummy " + simple.format( Calendar.getInstance().getTime() ) );
-		Calendar cal = Calendar.getInstance();
-		cal.add( Calendar.HOUR, (1 * 24) );
-		chatMessage1.setSendDate( cal.getTime() );
-
-		ChatMessage chatMessage2 = new ChatMessage();
-		chatMessage2.setMessageId( "msg " + (++dummyChatRoomCount) );
-		chatMessage2.setSender( "ai" );
-		chatMessage2.setMessage( "Hi!  this is dummy " + simple.format( Calendar.getInstance().getTime() ) );
-		chatMessage2.setSendDate( new Date() );
+//		ChatMessage chatMessage1 = new ChatMessage();
+//		chatMessage1.setMessageId( "msg " + (++dummyChatRoomCount) );
+//		chatMessage1.setSender( "user" );
+//		chatMessage1.setMessage( "Hello! this is dummy " + simple.format( Calendar.getInstance().getTime() ) );
+//		Calendar cal = Calendar.getInstance();
+//		cal.add( Calendar.HOUR, (1 * 24) );
+//		chatMessage1.setSendDate( cal.getTime() );
+//
+//		ChatMessage chatMessage2 = new ChatMessage();
+//		chatMessage2.setMessageId( "msg " + (++dummyChatRoomCount) );
+//		chatMessage2.setSender( "ai" );
+//		chatMessage2.setMessage( "Hi!  this is dummy " + simple.format( Calendar.getInstance().getTime() ) );
+//		chatMessage2.setSendDate( new Date() );
 
 		ChatRoomHistory chatRoomHistory = new ChatRoomHistory();
 		chatRoomHistory.setRoomId( guid );
-		chatRoomHistory.setChatMessages( Arrays.asList( chatMessage1, chatMessage2 ) );
+//		chatRoomHistory.setChatMessages( Arrays.asList( chatMessage1, chatMessage2 ) );
 		chatRoomHistoryMap.put( guid, chatRoomHistory );
 
 		chatRoomList.add( chatRoom );

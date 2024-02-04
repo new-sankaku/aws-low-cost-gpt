@@ -9,7 +9,11 @@ public class ChatMessage {
 	String sender;
 	String message;
 	Date sendDate;
+	long responseTime;
 
+	public static String SENDER_AI = "ai";
+	public static String SENDER_USER = "user";
+	
 	public ChatMessage() {
 	}
 
@@ -55,6 +59,14 @@ public class ChatMessage {
 
 	public void setMessage( String message ) {
 		this.message = message;
+	}
+
+	public long getResponseTime() {
+		return this.responseTime;
+	}
+
+	public void setResponseTime(long responseTime) {
+		this.responseTime = responseTime;
 	}
 
 }

@@ -7,6 +7,16 @@
           {{ $t("app_name") }}
         </q-toolbar-title>
 
+        <q-spinner-audio color="secondary" v-if="isLoading" size="2em" />
+        <q-spinner-ball color="red" v-if="isLoading" size="2em" />
+        <q-spinner-bars color="purple" v-if="isLoading" size="2em" />
+        <q-spinner-box color="deep-orange" v-if="isLoading" size="2em" />
+        <q-spinner-clock color="brown" v-if="isLoading" size="2em" />
+        <q-spinner-comment color="deep-purple" v-if="isLoading" size="2em" />
+        <q-spinner-cube color="indigo" v-if="isLoading" size="2em" />
+        <q-spinner-dots color="blue" v-if="isLoading" size="2em" />
+        <q-spinner-facebook color="light-blue" v-if="isLoading" size="2em" />
+        <q-spinner-gears color="cyan" v-if="isLoading" size="2em" />
         <q-select
           filled
           v-model="selectedModel"
@@ -118,7 +128,7 @@
                 <q-btn icon="send" @click="sendMessage(index)" flat></q-btn>
               </template>
             </q-input>
-            <div class="input-notice">
+            <div class="input-notice q-pa-sm">
               {{ $t("warning_message") }}
             </div>
           </div>
@@ -165,6 +175,7 @@ export default {
       inputDoller: 0.0,
       outDoller: 0.0,
       modelsData: [],
+      isLoading: false,
     };
   },
   created() {
@@ -175,8 +186,6 @@ export default {
   },
   methods: {
     fetchUserPlan() {
-      console.log("fetchUserPlan");
-
       getData("UsersPlan")
         .then((data) => {
           this.modelsData = data;
@@ -187,6 +196,7 @@ export default {
           if (data.length > 0) {
             this.inputDoller = data[0].inputDoller;
             this.outDoller = data[0].outDoller;
+            this.selectedModel = this.modelOptions[0];
           }
         })
         .catch((error) => {
@@ -194,21 +204,11 @@ export default {
         });
     },
     updateDollerValues() {
-      console.log("updateDollerValues");
-      console.log("this.selectedModel", this.selectedModel);
-      console.log("this.selectedModel.modelId", this.selectedModel.value);
       const selectedModel = this.modelsData.find(
         (model) => model.modelId === this.selectedModel.value
       );
 
-      console.log("Selected Model ID:", selectedModel);
-
       if (selectedModel) {
-        console.log("if (selectedModel)");
-
-        console.log("inputDoller", selectedModel.inputDoller);
-        console.log("outDoller", selectedModel.outDoller);
-
         this.inputDoller = selectedModel.inputDoller;
         this.outDoller = selectedModel.outDoller;
       }
@@ -291,6 +291,7 @@ export default {
       if (inputField.trim() === "") return;
       this.chatHistory[index].push({ text: inputField, sender: "user" });
       this.inputFields[index] = "";
+      this.isLoading = true;
 
       try {
         const chatMessageList = this.chatHistory.flatMap((chatHistoryItem) =>
@@ -300,8 +301,16 @@ export default {
           }))
         );
 
-        console.log("chatMessageList:", chatMessageList);
-        const response = await postData("ChatCompletions", chatMessageList);
+        console.log("this.selectedModel.label:", this.selectedModel.label);
+
+        const dataToSend = {
+          chatMessageList: chatMessageList,
+          selectedModel: this.selectedModel.label,
+        };
+
+        console.log("Sending data:", dataToSend);
+
+        const response = await postData("ChatCompletions", dataToSend);
 
         if (response && response.message) {
           this.chatHistory[index].push({
@@ -311,6 +320,8 @@ export default {
         }
       } catch (error) {
         console.error("Failed to send message:", error);
+      } finally {
+        this.isLoading = false;
       }
     },
     formatMessage(text) {
@@ -379,11 +390,11 @@ export default {
 }
 
 .user-message {
-  background-color: #faf0e6;
+  background-color: #e6e4ff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .ai-message {
-  background-color: #fafad2;
+  background-color: #e1e1e1;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -444,11 +455,12 @@ textarea {
 }
 .custom-selection {
   min-width: 300px;
+  color: white;
 }
+
 .label-container .custom-label {
-  color: #ccc;
-  margin-right: 8px;
-  margin-top: 8px;
+  color: #ffffff;
+  margin: 0%;
   min-width: 5vh;
   display: flex;
   flex-direction: column;
