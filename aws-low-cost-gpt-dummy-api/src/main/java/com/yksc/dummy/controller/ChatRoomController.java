@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yksc.dummy.data.Data;
-import com.yksc.dummy.model.ChatMessage;
-import com.yksc.dummy.model.ChatRoom;
+import com.yksc.model.db.ChatMessage;
+import com.yksc.model.db.ChatRoom;
 
 @RestController
 @RequestMapping("/ChatRoom")

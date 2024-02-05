@@ -1,22 +1,27 @@
 <template>
-  <q-layout>
+
+<div class="fixed-overlay">
+  <q-spinner-audio color="secondary" v-if="isLoading" size="2em" />
+  <q-spinner-ball color="red" v-if="isLoading" size="2em" />
+  <q-spinner-bars color="purple" v-if="isLoading" size="2em" />
+  <q-spinner-box color="deep-orange" v-if="isLoading" size="2em" />
+  <q-spinner-clock color="brown" v-if="isLoading" size="2em" />
+  <q-spinner-comment color="deep-purple" v-if="isLoading" size="2em" />
+  <q-spinner-cube color="indigo" v-if="isLoading" size="2em" />
+  <q-spinner-dots color="blue" v-if="isLoading" size="2em" />
+  <q-spinner-facebook color="light-blue" v-if="isLoading" size="2em" />
+  <q-spinner-gears color="cyan" v-if="isLoading" size="2em" />
+</div>
+
+<q-layout>
     <q-header class="custom-toolbar">
       <q-toolbar>
         <q-btn flat round dense icon="menu" @click="toggleDrawer"></q-btn>
-        <q-toolbar-title>
+        <q-toolbar-title class="font-size">
           {{ $t("app_name") }}
         </q-toolbar-title>
 
-        <q-spinner-audio color="secondary" v-if="isLoading" size="2em" />
-        <q-spinner-ball color="red" v-if="isLoading" size="2em" />
-        <q-spinner-bars color="purple" v-if="isLoading" size="2em" />
-        <q-spinner-box color="deep-orange" v-if="isLoading" size="2em" />
-        <q-spinner-clock color="brown" v-if="isLoading" size="2em" />
-        <q-spinner-comment color="deep-purple" v-if="isLoading" size="2em" />
-        <q-spinner-cube color="indigo" v-if="isLoading" size="2em" />
-        <q-spinner-dots color="blue" v-if="isLoading" size="2em" />
-        <q-spinner-facebook color="light-blue" v-if="isLoading" size="2em" />
-        <q-spinner-gears color="cyan" v-if="isLoading" size="2em" />
+
         <q-select
           filled
           v-model="selectedModel"
@@ -25,7 +30,7 @@
           class="q-pr-sm custom-selection"
           @update:modelValue="updateDollerValues"
         />
-        <div class="q-pr-xl label-container">
+        <div class="q-pr-xl label-container font-size-mini">
           <label class="custom-label">1K In: ${{ inputDoller }}</label>
           <label class="custom-label">1K Out: ${{ outDoller }}</label>
         </div>
@@ -37,6 +42,7 @@
           icon="person_add"
           @click="newChat"
           label="New Chat"
+          class="font-size-mini"
         ></q-btn>
 
         <q-btn
@@ -46,6 +52,7 @@
           icon="logout"
           @click="logout"
           label="Logout"
+          class="font-size-mini"
         ></q-btn>
       </q-toolbar>
     </q-header>
@@ -64,12 +71,13 @@
             v-ripple
             @click="showLayer(index)"
             :class="{ 'active-item': index === activeLayer }"
+            class="font-size-mini"
           >
             <q-item-section>
               <q-item-label>
                 {{ layer.title }}
               </q-item-label>
-              <q-item-label caption lines="1">
+              <q-item-label caption lines="1" class="font-size-micro">
                 Total ${{ layer.sumTotal }}
               </q-item-label>
             </q-item-section>
@@ -153,7 +161,6 @@ export default {
         width: "5px",
         opacity: 0.75,
       },
-
       barStyle: {
         right: "2px",
         borderRadius: "9px",
@@ -161,6 +168,7 @@ export default {
         width: "9px",
         opacity: 0.2,
       },
+      loadingCounter: 0,
     };
   },
   data() {
@@ -292,6 +300,7 @@ export default {
       this.chatHistory[index].push({ text: inputField, sender: "user" });
       this.inputFields[index] = "";
       this.isLoading = true;
+      this.loadingCounter+=1;
 
       try {
         const chatMessageList = this.chatHistory.flatMap((chatHistoryItem) =>
@@ -321,7 +330,10 @@ export default {
       } catch (error) {
         console.error("Failed to send message:", error);
       } finally {
-        this.isLoading = false;
+        this.loadingCounter-=1;
+        if( this.loadingCounter == 0 ){
+          this.isLoading = false;
+        }
       }
     },
     formatMessage(text) {
@@ -454,16 +466,35 @@ textarea {
   max-height: 8.5vh;
 }
 .custom-selection {
-  min-width: 300px;
+  min-width: 120px;
+  font-size: 0.8rem;
   color: white;
 }
 
 .label-container .custom-label {
-  color: #ffffff;
+  font-size: 0.75rem;
+  color: #303030;
   margin: 0%;
   min-width: 5vh;
   display: flex;
   flex-direction: column;
   margin-top: 0px;
+}
+.font-size{
+  font-size: 1.0rem;
+}
+.font-size-mini{
+  font-size: 0.8rem;
+}
+.font-size-micro{
+  font-size: 0.65rem;
+}
+.fixed-overlay {
+  position: fixed;
+  top: 10vh;
+  right: 10px;
+  z-index: 1000;
+  padding: 10px;
+  box-sizing: border-box;
 }
 </style>

@@ -1,4 +1,4 @@
-package com.yksc.dummy.util;
+package com.yksc.model.util;
 
 import java.util.UUID;
 

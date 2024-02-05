@@ -1,8 +1,9 @@
-package com.yksc.dummy.model;
+package com.yksc.model.db;
 
 import java.util.Date;
 
-import com.yksc.dummy.util.IdGeneraterUtil;
+import com.yksc.model.util.IdGeneraterUtil;
+
 
 public class User {
 	private String userId;

@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yksc.dummy.data.Data;
-import com.yksc.dummy.model.User;
-import com.yksc.dummy.util.IdGeneraterUtil;
+import com.yksc.model.db.User;
+import com.yksc.model.util.IdGeneraterUtil;
 
 @RestController
 @RequestMapping("/Users")

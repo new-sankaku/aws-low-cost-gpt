@@ -17,9 +17,9 @@ import com.theokanning.openai.completion.chat.ChatCompletionChoice;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatMessageRole;
 import com.theokanning.openai.service.OpenAiService;
-import com.yksc.dummy.model.ChatMessage;
-import com.yksc.dummy.model.ChatRequest;
-import com.yksc.dummy.util.IdGeneraterUtil;
+import com.yksc.model.db.ChatMessage;
+import com.yksc.model.db.ChatRequest;
+import com.yksc.model.util.IdGeneraterUtil;
 
 @RestController
 @RequestMapping("/ChatCompletions")

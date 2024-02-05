@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.yksc.dummy.data.Data;
-import com.yksc.dummy.model.AiModel;
+import com.yksc.model.rest.AiModel;
 
 @RestController
 @RequestMapping("/UsersPlan")

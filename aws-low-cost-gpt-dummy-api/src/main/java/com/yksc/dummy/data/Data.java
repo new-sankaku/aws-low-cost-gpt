@@ -10,12 +10,12 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import com.yksc.dummy.model.AiModel;
-import com.yksc.dummy.model.ChatMessage;
-import com.yksc.dummy.model.ChatRoom;
-import com.yksc.dummy.model.ChatRoomHistory;
-import com.yksc.dummy.model.User;
-import com.yksc.dummy.util.IdGeneraterUtil;
+import com.yksc.model.db.ChatMessage;
+import com.yksc.model.db.ChatRoom;
+import com.yksc.model.db.ChatRoomHistory;
+import com.yksc.model.db.User;
+import com.yksc.model.rest.AiModel;
+import com.yksc.model.util.IdGeneraterUtil;
 
 public class Data {
 
@@ -92,17 +92,11 @@ public class Data {
 
 
 	private static void addAiModel() {
-        AiModel model1 = new AiModel("1", "gpt-3.5-turbo-0125", "Description for Model One", new Date(), 1, "Category A", "JSON", "XML", 0.00001, 0.00005);
-        AiModel model2 = new AiModel("2", "gpt-3.5-turbo-16k-0613", "Description for Model Two", new Date(), 2, "Category B", "XML", "JSON", 0.1, 0.00015);
-        AiModel model3 = new AiModel("3", "gpt-3.5-turbo-instruct-0914", "Description for Model Three", new Date(), 3, "Category C", "CSV", "CSV", 1.5, 0.00025);
-//        AiModel model4 = new AiModel("4", "text-embedding-3-small", "Description for Model Four", new Date(), 4, "Category D", "TEXT", "TEXT", 3.5, 0.00035);
-//        AiModel model5 = new AiModel("5", "text-embedding-3-large", "Description for Model Five", new Date(), 5, "Category E", "JSON", "JSON", 10, 0.00045);
+        AiModel model1 = new AiModel("1", "gpt-3.5-turbo-0125", "Description for Model One", new Date(), 1, "Category A", "JSON", "XML", 0.0005, 0.0015);
+        AiModel model2 = new AiModel("2", "gpt-3.5-turbo-16k-0613", "Description for Model Two", new Date(), 2, "Category B", "XML", "JSON", 0.003, 0.004);
 
 		aiModelMap.put("gpt-3.5-turbo-0125", model1);
 		aiModelMap.put("gpt-3.5-turbo-16k-0613", model2);
-//		aiModelMap.put("gpt-3.5-turbo-instruct-0914", model3);
-//		aiModelMap.put("text-embedding-3-small", model4);
-//		aiModelMap.put("text-embedding-3-large", model5);
 	}
 	
 	private static void addUser( User user ) {

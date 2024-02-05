@@ -1,4 +1,4 @@
-package com.yksc.dummy.model;
+package com.yksc.model.db;
 
 import java.util.ArrayList;
 import java.util.Date;
