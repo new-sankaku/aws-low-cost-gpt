@@ -2,21 +2,35 @@ package com.yksc.model.db;
 
 import java.util.Date;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBIgnore;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
+import com.yksc.model.db.date.DateConverter;
 
 @DynamoDBTable(tableName="ChatMessage")
 public class ChatMessage {
 	public static final CharSequence SENDER_AI = "ai";
 	public static final CharSequence SENDER_USER = "user";
+
 	@DynamoDBHashKey
 	String messageId;
-	//ai or user
+	@DynamoDBAttribute
 	String sender;
-	String message;
+	@DynamoDBAttribute
+	String message; 
+	@DynamoDBTypeConverted(converter = DateConverter.class) 
 	Date sendDate;
+	@DynamoDBAttribute
 	long responseTime;
+	@DynamoDBAttribute
 	long token;
+	
+	@DynamoDBIgnore
+	String roomId;
+	@DynamoDBIgnore
+	String roomTitle;
 	
 	public ChatMessage() {
 	}

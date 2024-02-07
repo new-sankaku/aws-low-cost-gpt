@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,8 +19,11 @@ import com.theokanning.openai.completion.chat.ChatCompletionChoice;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatMessageRole;
 import com.theokanning.openai.service.OpenAiService;
+import com.yksc.dummy.data.Data;
 import com.yksc.model.db.ChatMessage;
-import com.yksc.model.db.ChatRequest;
+import com.yksc.model.db.ChatRoom;
+import com.yksc.model.db.User;
+import com.yksc.model.rest.ChatRequest;
 import com.yksc.model.util.IdGeneraterUtil;
 
 @RestController
@@ -26,9 +31,38 @@ import com.yksc.model.util.IdGeneraterUtil;
 public class ChatCompletionsController {
 
 	@PostMapping
-    public ResponseEntity<Object> generateText(@RequestBody ChatRequest chatRequest) {
+    public ResponseEntity<Object> generateText(@RequestHeader("user-mail-address") String userMailAddress, @RequestBody ChatRequest chatRequest) {
         List<ChatMessage> chatMessageList = chatRequest.getChatMessageList();
         String selectedModel = chatRequest.getSelectedModel();
+        
+        ChatMessage userChatMessage =  chatMessageList.get(chatMessageList.size()-1);
+        userChatMessage.setMessageId(IdGeneraterUtil.nextGuid());
+
+        //new Chat
+        ChatRoom chatRoom = null;
+        if( StringUtils.isBlank(chatRequest.getRoomId()) ) {
+    		Optional<User> optionalUser = Data.usersMap.values().stream()
+    				.filter( user -> user.getEmail().equals( userMailAddress ) )
+    				.findFirst();
+
+    		if( optionalUser.isPresent() ) {
+    			chatRoom = new ChatRoom();
+        		String guid = IdGeneraterUtil.nextGuid();
+        		chatRoom.setRoomId( guid );
+        		chatRoom.setOwnerUserId( optionalUser.get().getUserId() );
+        		chatRoom.setRoomTitle( "include server" );
+        		chatRoom.setCreateDate( new Date() );
+        		chatRoom.setUpdateDate( new Date() );
+        		chatRoom.setAiModel( "gpt-3.5-turbo-0125" );
+        		chatRoom.setAiModelSource( "Open Ai" );
+        		chatRoom.setSumTotal( 0 );
+            	Data.chatRoomList.add( chatRoom );
+    		}
+        }else {
+        	String roomId = chatRequest.getRoomId();
+        	Optional<ChatRoom> optional = Data.chatRoomList.stream().filter(temp -> StringUtils.equals(roomId, temp.getRoomId())).findFirst();
+        	chatRoom = optional.get();
+        }
         
         System.out.println("selectedModel:" + selectedModel);
         System.out.println("chatMessageList.size:" + chatMessageList.size());
@@ -40,6 +74,12 @@ public class ChatCompletionsController {
         	ChatMessage chatMessage = new ChatMessage( IdGeneraterUtil.nextGuid(), "ai", result, new Date() );
         	long end = Calendar.getInstance().getTimeInMillis();
         	chatMessage.setResponseTime(start - end);
+        	
+        	Data.chatMessgaeMap.put(userChatMessage.getMessageId(), userChatMessage);
+        	chatRoom.getChatMessageIds().add(userChatMessage.getMessageId());
+
+        	Data.chatMessgaeMap.put(chatMessage.getMessageId(), chatMessage);
+        	chatRoom.getChatMessageIds().add(chatMessage.getMessageId());
         	return ResponseEntity.ok( chatMessage  );
     	}else {
     		long start = Calendar.getInstance().getTimeInMillis();
@@ -61,6 +101,12 @@ public class ChatCompletionsController {
         	long end = Calendar.getInstance().getTimeInMillis();
         	chatMessage.setResponseTime(start - end);
         	
+        	Data.chatMessgaeMap.put(userChatMessage.getMessageId(), userChatMessage);
+        	chatRoom.getChatMessageIds().add(userChatMessage.getMessageId());
+        	
+        	Data.chatMessgaeMap.put(chatMessage.getMessageId(), chatMessage);
+        	chatRoom.getChatMessageIds().add(chatMessage.getMessageId());
+
     		return ResponseEntity.ok( chatMessage  );
         }
         

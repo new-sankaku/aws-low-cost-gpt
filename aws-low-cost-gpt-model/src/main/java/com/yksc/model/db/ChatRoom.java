@@ -1,10 +1,15 @@
 package com.yksc.model.db;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBRangeKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverted;
+import com.yksc.model.db.date.DateConverter;
 
 @DynamoDBTable(tableName="ChatRoom")
 public class ChatRoom {
@@ -13,12 +18,21 @@ public class ChatRoom {
 	private String roomId;
 	@DynamoDBRangeKey
 	private String ownerUserId;
-	private String roomTitle;
+	@DynamoDBAttribute
+	private String roomTitle; 
+	@DynamoDBTypeConverted(converter = DateConverter.class) 
 	private Date createDate;
+	@DynamoDBTypeConverted(converter = DateConverter.class) 
 	private Date updateDate;
+	@DynamoDBAttribute
 	private String aiModel;
+	@DynamoDBAttribute
 	private String aiModelSource;
+	@DynamoDBAttribute
 	private double sumTotal;
+	@DynamoDBAttribute
+	private List<String> chatMessageIds = new ArrayList<String>();
+    
 
 	public ChatRoom() {
 	}
@@ -36,6 +50,14 @@ public class ChatRoom {
 
 
 	public static void main( String[] args ) {
+	}
+
+	public List<String> getChatMessageIds() {
+		return this.chatMessageIds;
+	}
+
+	public void setChatMessageIds(List<String> chatMessageIds) {
+		this.chatMessageIds = chatMessageIds;
 	}
 
 	public String getOwnerUserId() {

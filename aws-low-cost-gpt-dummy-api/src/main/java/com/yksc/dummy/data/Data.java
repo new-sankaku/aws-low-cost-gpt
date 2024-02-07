@@ -10,9 +10,10 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.yksc.model.db.ChatMessage;
 import com.yksc.model.db.ChatRoom;
-import com.yksc.model.db.ChatRoomHistory;
 import com.yksc.model.db.User;
 import com.yksc.model.rest.AiModel;
 import com.yksc.model.util.IdGeneraterUtil;
@@ -22,7 +23,7 @@ public class Data {
 	public static int dummyChatRoomCount = 0;
 
 	public static final List<ChatRoom> chatRoomList = new ArrayList<ChatRoom>();
-	public static final Map<String, ChatRoomHistory> chatRoomHistoryMap = new HashMap<String, ChatRoomHistory>();
+	public static final Map<String, ChatMessage> chatMessgaeMap = new HashMap<String, ChatMessage>();
 	public static final Map<String, User> usersMap = new HashMap<>();
 
 //	public static final Map<String, ArrayList<String>> userPlansMap = new HashMap<>();
@@ -61,14 +62,18 @@ public class Data {
 	}
 
 	public static List<ChatMessage> getChatRoomMessage( String roomId ) {
-		ChatRoomHistory chatRoomHistory = Data.chatRoomHistoryMap.get( roomId );
-		if( chatRoomHistory != null ) {
-			List<ChatMessage> chatMessageList = chatRoomHistory.getChatMessages();
-			return chatMessageList;
-
-		} else {
-			return new ArrayList<ChatMessage>();
+		List<ChatMessage> chatMessageList = new ArrayList<ChatMessage>();
+		
+		Optional<ChatRoom> chatRoomOptional = Data.chatRoomList.stream().filter(chatRoom -> StringUtils.equals(chatRoom.getRoomId(), roomId)).findFirst();
+		if( chatRoomOptional.isPresent() ) {
+			ChatRoom chatRoom = chatRoomOptional.get();
+			for (String messageId : chatRoom.getChatMessageIds() ) {
+				ChatMessage chatMessgae = chatMessgaeMap.get(messageId);
+				chatMessageList.add(chatMessgae);
+			}
 		}
+		
+		return chatMessageList;
 	}
 
 	static {
@@ -138,7 +143,6 @@ public class Data {
 		
 		Random rand = new Random(); // Random オブジェクトの生成
         double randDouble = rand.nextDouble( 100 ); //
-		
 		chatRoom.setSumTotal( randDouble );
 
 //		ChatMessage chatMessage1 = new ChatMessage();
@@ -154,11 +158,6 @@ public class Data {
 //		chatMessage2.setSender( "ai" );
 //		chatMessage2.setMessage( "Hi!  this is dummy " + simple.format( Calendar.getInstance().getTime() ) );
 //		chatMessage2.setSendDate( new Date() );
-
-		ChatRoomHistory chatRoomHistory = new ChatRoomHistory();
-		chatRoomHistory.setRoomId( guid );
-//		chatRoomHistory.setChatMessages( Arrays.asList( chatMessage1, chatMessage2 ) );
-		chatRoomHistoryMap.put( guid, chatRoomHistory );
 
 		chatRoomList.add( chatRoom );
 	}

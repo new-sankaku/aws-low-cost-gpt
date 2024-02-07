@@ -17,6 +17,13 @@
     <q-header class="custom-toolbar">
       <q-toolbar>
         <q-btn flat round dense icon="menu" @click="toggleDrawer"></q-btn>
+
+        <img
+        width="25"
+        height="25"
+        src="../assets/logo_reverse.svg"
+        alt="Logo"
+      />
         <q-toolbar-title class="font-size">
           {{ $t("app_name") }}
         </q-toolbar-title>
@@ -311,10 +318,11 @@ export default {
         );
 
         console.log("this.selectedModel.label:", this.selectedModel.label);
-
+        console.log("roomId", this.layers[index].roomId);
         const dataToSend = {
           chatMessageList: chatMessageList,
           selectedModel: this.selectedModel.label,
+          roomId :this.layers[index].roomId,
         };
 
         console.log("Sending data:", dataToSend);

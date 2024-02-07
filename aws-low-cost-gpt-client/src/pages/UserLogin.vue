@@ -9,6 +9,7 @@
         justify-content: center;
       "
     >
+    <label>Generative</label>
       <img
         width="75"
         height="75"
@@ -16,7 +17,7 @@
         alt="Logo"
         class="logo"
       />
-      <label>Low cost AI</label>
+      <label>AI. (Low cost)</label>
     </div>
     <form @submit.prevent="login">
       <div class="form-group">
@@ -113,8 +114,6 @@ export default {
       var pool = process.env.VUE_APP_POOL_ID;
       var client = process.env.VUE_APP_CLIENT_ID;
 
-      console.log("selectedLocale:", selectedLocale.value);
-
       if (pool == "COGNITO_POOL_ID") {
         alert(t("userlogin_system_error_not_set_pool_id"));
         return;
@@ -148,9 +147,6 @@ export default {
       var cognitoUser = new CognitoUser(userData);
       cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: function (result) {
-          console.log("authentication onSuccess");
-          console.log("token", result.getIdToken().getJwtToken());
-          console.log("Access token", result.getAccessToken().getJwtToken());
 
           localStorage.setItem(
             "access-token",

@@ -3,6 +3,7 @@ package com.yksc.model.rest;
 import java.util.Map;
 
 public class RequestInfo {
+	private String userUUID;
 	private String path;
 	private String httpMethod;
 	private String body;
@@ -10,6 +11,14 @@ public class RequestInfo {
 	private String accessToken;
 	private String email;
 	private Map<String, String> pathParameters;
+
+	public String getUserUUID() {
+		return this.userUUID;
+	}
+
+	public void setUserUUID(String userUUID) {
+		this.userUUID = userUUID;
+	}
 
 	public Map<String, String> getPathParameters() {
 		return this.pathParameters;
