@@ -68,4 +68,4 @@ OpenAI APIの場合は高いですがGoogleのGemini proは10分の1くらいな
 2024年3月1日ごろにはテキスト生成機能を実装したいと思っています。
 ---
 
-![Architecture](Architecture/2024-01-31%20021414.png)
+![Architecture](aws-low-cost-gpt-client/Architecture/2024-01-31%20021414.png)
