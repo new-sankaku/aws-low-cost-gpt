@@ -2,11 +2,15 @@ package com.yksc.lambda;
 
 import java.util.Map;
 
+import org.apache.logging.log4j.Logger;
+
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.yksc.lambda.exception.AuthenticationException;
+import com.yksc.lambda.log.LogUtil;
+import com.yksc.lambda.log.LoggerFactory;
 import com.yksc.lambda.util.CognitoValidationUtil;
 import com.yksc.lambda.util.RequestRouterUtil;
 import com.yksc.lambda.util.ResponseUtil;
@@ -15,18 +19,25 @@ import com.yksc.model.rest.RequestInfo;
 public class LambdaFunctionHandler
 		implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
+	private static final Logger logger = LoggerFactory.getLogger();
+
 	@Override
 	public APIGatewayProxyResponseEvent handleRequest( APIGatewayProxyRequestEvent request, Context context ) {
 		try {
 			RequestInfo requestInfo = setRequestInfo( request );
 			if( CognitoValidationUtil.isValidToken( requestInfo.getToken(), requestInfo.getEmail() ) ) {
-				return RequestRouterUtil.next( requestInfo );
+				
+				APIGatewayProxyResponseEvent result = RequestRouterUtil.next( requestInfo );
+				if( logger.isInfoEnabled() ) {
+					logger.info(LogUtil.objectToString(result));
+				}
+				return result;
 			}
 		} catch (AuthenticationException e) {
-			System.out.println(e);
+			logger.error(e);
 			return ResponseUtil.unauthorizedResponse( "is ValidToken is error."  + e.getMessage());
 		} catch (Exception e) {
-			System.out.println(e);
+			logger.error(e);
 			return ResponseUtil.unknownErrorResponse( "unknown error. " + e.getMessage() );
 		}
 
@@ -34,6 +45,12 @@ public class LambdaFunctionHandler
 	}
 
 	public RequestInfo setRequestInfo( APIGatewayProxyRequestEvent request ) {
+		logger.info( "setRequestInfo start" );
+
+		if( logger.isInfoEnabled()) {
+			logger.info( "setRequestInfo APIGatewayProxyRequestEvent" + LogUtil.objectToString(request) );
+		}
+		
 		String httpMethod = request.getHttpMethod();
 		String path = request.getPath();
 		String body = request.getBody();
@@ -59,6 +76,13 @@ public class LambdaFunctionHandler
 
 		String userUuid = CognitoValidationUtil.getUserUUID(accessToken);
 		requestInfo.setUserUUID(userUuid);
+
+		if( logger.isInfoEnabled()) {
+			logger.info( "setRequestInfo requestInfo" + LogUtil.objectToString(requestInfo) );
+		}
+		
+		
+		logger.info( "setRequestInfo end" );
 		return requestInfo;
 	}
 }

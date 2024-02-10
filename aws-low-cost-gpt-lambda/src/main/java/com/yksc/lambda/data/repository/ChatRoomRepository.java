@@ -3,12 +3,16 @@ package com.yksc.lambda.data.repository;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.Logger;
+
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
+import com.yksc.lambda.log.LoggerFactory;
 import com.yksc.model.db.ChatRoom;
 
 public class ChatRoomRepository {
+	private static final Logger logger = LoggerFactory.getLogger();
 
 	private static final String TABLE_NAME = "ChatRoom";
 

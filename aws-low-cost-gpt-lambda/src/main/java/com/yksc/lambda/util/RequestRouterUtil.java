@@ -1,15 +1,18 @@
 package com.yksc.lambda.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.Logger;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yksc.lambda.controller.ChatRoomController;
 import com.yksc.lambda.controller.ChatRoomHistoryController;
+import com.yksc.lambda.log.LoggerFactory;
 import com.yksc.model.rest.RequestInfo;
 
 
 public class RequestRouterUtil {
+	private static final Logger logger = LoggerFactory.getLogger();
 
 	private static final String GET = "GET";
 	private static final String POST = "POST";
@@ -22,8 +25,15 @@ public class RequestRouterUtil {
 		String httpMethod = requestInfo.getHttpMethod();
 		
 		String str = path + ":" + httpMethod;
+		logger.info("next:" + str);
 		
-		if( StringUtils.startsWith(path, "/ChatRoom") ) {
+		if( StringUtils.startsWith(path, "/ChatRoomHistory") ) {
+			ChatRoomHistoryController chatRoomHistoryController = new ChatRoomHistoryController();
+			if (path.matches("/ChatRoomHistory")) {
+				if(StringUtils.equals( GET, httpMethod ))    return chatRoomHistoryController.getChatRoomHistory(requestInfo);
+			}
+
+		}else if( StringUtils.startsWith(path, "/ChatRoom") ) {
 			ChatRoomController chatRoomController = new ChatRoomController();
 			
 			if (path.matches("/ChatRoom/Message/.+")) {
@@ -39,19 +49,12 @@ public class RequestRouterUtil {
 				if(StringUtils.equals( PUT, httpMethod ))    return ResponseUtil.notFoundResponse(str);
 			
 			}
-		}else if( StringUtils.startsWith(path, "/ChatRoomHistory") ) {
-			ChatRoomHistoryController chatRoomHistoryController = new ChatRoomHistoryController();
-			
-			if (path.matches("/ChatRoomHistory")) {
-				if(StringUtils.equals( GET, httpMethod ))    return chatRoomHistoryController.getChatRoomHistory(requestInfo);
-			
-			}
 		}else if( StringUtils.startsWith(path, "/ChatCompletions") ) {
 			if (path.matches("/ChatCompletions")) {
 				if(StringUtils.equals( POST, httpMethod ))   return ResponseUtil.notFoundResponse(str);
 			}	
 		}else if( StringUtils.startsWith(path, "/UsersPlan") ) {
-			if (path.matches("/ChatCompletions")) {
+			if (path.matches("/UsersPlan")) {
 				if(StringUtils.equals( POST, httpMethod ))   return ResponseUtil.notFoundResponse(str);
 			}	
 		}
@@ -59,4 +62,5 @@ public class RequestRouterUtil {
 		return ResponseUtil.notFoundResponse(str);
 	}
 
+	
 }

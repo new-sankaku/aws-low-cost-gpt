@@ -1,76 +1,86 @@
 <template>
-  <div class="container login">
-    <div
-      class="q-pa-sm logo"
-      style="
-        margin-bottom: 0px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      "
-    >
-    <label>Generative</label>
-      <img
-        width="75"
-        height="75"
-        src="../assets/logo.svg"
-        alt="Logo"
-        class="logo"
-      />
-      <label>AI. (Low cost)</label>
-    </div>
-    <form @submit.prevent="login">
-      <div class="form-group">
-        <label for="inputEmail">Mail Address</label>
-        <q-input
-          filled
-          v-model="inputEmail"
-          id="inputEmail"
-          type="email"
-          placeholder="email@example.com"
-          class="custom-input"
-        >
-          <template v-slot:prepend>
-            <q-icon name="mail_outline" />
-          </template>
-        </q-input>
-      </div>
-      <div class="form-group">
-        <label for="inputPassword">Password</label>
-        <q-input
-          filled
-          label="Uppe/Lower Char,Num,Special,Min12"
-          v-model="inputPassword"
-          id="inputPassword"
-          type="password"
-          placeholder="●●●●●●"
-          class="custom-input"
-        >
-          <template v-slot:prepend>
-            <q-icon name="lock_outline" />
-          </template>
-        </q-input>
-      </div>
-      <q-btn label="Login" type="submit" color="primary" class="full-width" />
-    </form>
-    <div class="language-select" style="margin-top: 70px">
-      <q-select
-        v-model="locale"
-        :options="localeOptions"
-        label="Language"
-        dense
-        filled
-        borderless
-        emit-value
-        map-options
-        options-dense
-        @update:modelValue="changeLocale"
-        style="min-width: 150px"
+  <div>
+    <div class="container login">
+      <div
+        class="q-pa-sm logo"
+        style="
+          margin-bottom: 0px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        "
       >
-        <template v-slot:prepend>
-          <q-icon name="language" />
-        </template>
-      </q-select>
+        <label>Generative</label>
+        <img
+          width="75"
+          height="75"
+          src="../assets/logo.svg"
+          alt="Logo"
+          class="logo"
+        />
+        <label>AI. (Low cost)</label>
+      </div>
+      <form @submit.prevent="login">
+        <div class="form-group">
+          <label for="inputEmail">Mail Address</label>
+          <q-input
+            filled
+            v-model="inputEmail"
+            id="inputEmail"
+            type="email"
+            placeholder="email@example.com"
+            class="custom-input"
+          >
+            <template v-slot:prepend>
+              <q-icon name="mail_outline" />
+            </template>
+          </q-input>
+        </div>
+        <div class="form-group">
+          <label for="inputPassword">Password</label>
+          <q-input
+            filled
+            label="Uppe/Lower Char,Num,Special,Min12"
+            v-model="inputPassword"
+            id="inputPassword"
+            type="password"
+            placeholder="●●●●●●"
+            class="custom-input"
+          >
+            <template v-slot:prepend>
+              <q-icon name="lock_outline" />
+            </template>
+          </q-input>
+        </div>
+        <q-btn label="Login" type="submit" color="primary" class="full-width" />
+      </form>
+      <div class="language-select" style="margin-top: 70px">
+        <q-select
+          v-model="locale"
+          :options="localeOptions"
+          label="Language"
+          dense
+          filled
+          borderless
+          emit-value
+          map-options
+          options-dense
+          @update:modelValue="changeLocale"
+          style="min-width: 150px"
+        >
+          <template v-slot:prepend>
+            <q-icon name="language" />
+          </template>
+        </q-select>
+      </div>
+
+      <div class="external-link" style="text-align: center; margin-top: 20px">
+        <a href="html/architecture.html" target="_blank">Architecture</a>
+      </div>
+    </div>
+
+    <div class="svg-container">
+      <img src="../assets/saru.svg" alt="monkey" width="150" height="150" />
     </div>
   </div>
 </template>
@@ -147,7 +157,6 @@ export default {
       var cognitoUser = new CognitoUser(userData);
       cognitoUser.authenticateUser(authenticationDetails, {
         onSuccess: function (result) {
-
           localStorage.setItem(
             "access-token",
             result.getAccessToken().getJwtToken()
@@ -190,30 +199,16 @@ function findMatchingLocale(userLocale) {
 <style>
 .container.login {
   max-width: 400px;
-  margin: auto;
+  margin: 20px auto; /* 上下に20px、左右は自動で中央揃え */
+  padding: 20px; /* 内側に余白を追加 */
 }
 
-.full-width {
-  width: 100%;
-}
-
-.form-group {
-  margin-bottom: 1rem;
-}
-
-.language-select {
-  margin-top: 1rem;
-}
-
-label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
-  color: #555;
-}
-.container.login {
-  max-width: 400px;
-  margin: auto;
+/* 小さい画面（モバイルデバイス）用のスタイル */
+@media (max-width: 768px) {
+  .container.login {
+    margin: 10px; /* モバイルデバイスでは余白を少し小さく */
+    padding: 10px; /* 内側の余白も調整 */
+  }
 }
 
 .full-width {
@@ -241,5 +236,11 @@ label {
 .forgot-password {
   margin-bottom: 1rem;
   text-align: right;
+}
+.svg-container {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
 }
 </style>

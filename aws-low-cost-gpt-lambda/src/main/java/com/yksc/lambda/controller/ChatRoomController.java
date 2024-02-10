@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.logging.log4j.Logger;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yksc.lambda.controller.param.PathParam;
 import com.yksc.lambda.data.repository.ChatMessageRepository;
 import com.yksc.lambda.data.repository.ChatRoomRepository;
+import com.yksc.lambda.log.LoggerFactory;
 import com.yksc.lambda.util.ResponseUtil;
 import com.yksc.model.db.ChatMessage;
 import com.yksc.model.db.ChatRoom;
@@ -18,6 +20,7 @@ import com.yksc.model.rest.RequestInfo;
 import software.amazon.awssdk.http.HttpStatusCode;
 
 public class ChatRoomController {
+	private static final Logger logger = LoggerFactory.getLogger();
 
 	/**
 	 * 

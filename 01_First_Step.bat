@@ -1,3 +1,6 @@
+cd aws-low-cost-gpt-client
+call npm install
+cd ../
 cd aws-low-cost-gpt-model
 call mvn clean install
 cd ../

@@ -4,14 +4,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.logging.log4j.Logger;
+
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.yksc.lambda.log.LoggerFactory;
 import com.yksc.lambda.util.ResponseUtil;
 import com.yksc.model.rest.AiModel;
 import com.yksc.model.rest.RequestInfo;
 
 public class UsersPlanController {
 
+	private static final Logger logger = LoggerFactory.getLogger();
 
 	/**
 	 * 
