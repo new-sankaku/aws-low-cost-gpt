@@ -1,1 +1,24 @@
-// app global css in SCSS form
+:root {
+  --font-size-base: 14px;
+}
+
+@media (max-width: 650px) {
+  :root {
+    --font-size-base: 14px;
+  }
+}
+
+body {
+  font-size: var(--font-size-base);
+}
+.q-btn {
+  font-size: var(--font-size-base);
+  size: 90%;
+}
+.q-file {
+  font-size: var(--font-size-base);
+}
+
+.default-font-size {
+  font-size: var(--font-size-base);
+}

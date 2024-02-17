@@ -5,8 +5,9 @@ import org.apache.logging.log4j.Logger;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.yksc.lambda.controller.ChatRoomController;
-import com.yksc.lambda.controller.ChatRoomHistoryController;
+import com.yksc.lambda.controller.ChatCompletionsController;
+import com.yksc.lambda.controller.ChatRoomsController;
+import com.yksc.lambda.controller.UsersPlanController;
 import com.yksc.lambda.log.LoggerFactory;
 import com.yksc.model.rest.RequestInfo;
 
@@ -27,38 +28,36 @@ public class RequestRouterUtil {
 		String str = path + ":" + httpMethod;
 		logger.info("next:" + str);
 		
-		if( StringUtils.startsWith(path, "/ChatRoomHistory") ) {
-			ChatRoomHistoryController chatRoomHistoryController = new ChatRoomHistoryController();
-			if (path.matches("/ChatRoomHistory")) {
-				if(StringUtils.equals( GET, httpMethod ))    return chatRoomHistoryController.getChatRoomHistory(requestInfo);
-			}
-
-		}else if( StringUtils.startsWith(path, "/ChatRoom") ) {
-			ChatRoomController chatRoomController = new ChatRoomController();
+		if( StringUtils.startsWith(path, "/ChatRooms") ) {
+			ChatRoomsController chatRoomController = new ChatRoomsController();
 			
 			if (path.matches("/ChatRoom/Message/.+")) {
-				if(StringUtils.equals( GET, httpMethod ))    return chatRoomController.getChatRoomMessageByRoomId(requestInfo);
+				if(StringUtils.equals( GET, httpMethod ))    return chatRoomController.getChatRoomMessageById(requestInfo);
 			
 			}else if (path.matches("/ChatRoom/.+")) {
-				if(StringUtils.equals( GET, httpMethod ))    return chatRoomController.getChatRoomById(requestInfo);
+				if(StringUtils.equals( GET, httpMethod ))    return chatRoomController.getChatRoomHistory(requestInfo);
 				//TODO next version
 				if(StringUtils.equals( DELETE, httpMethod )) return ResponseUtil.notFoundResponse(str);
 			
 			}else if (path.matches("/ChatRoom")) {
-				//not use.
+				//TODO next version
 				if(StringUtils.equals( PUT, httpMethod ))    return ResponseUtil.notFoundResponse(str);
 			
 			}
 		}else if( StringUtils.startsWith(path, "/ChatCompletions") ) {
+			
+			ChatCompletionsController chatCompletionsController = new ChatCompletionsController();
 			if (path.matches("/ChatCompletions")) {
-				if(StringUtils.equals( POST, httpMethod ))   return ResponseUtil.notFoundResponse(str);
+				if(StringUtils.equals( POST, httpMethod ))   return chatCompletionsController.generateText(requestInfo);
 			}	
 		}else if( StringUtils.startsWith(path, "/UsersPlan") ) {
+			UsersPlanController usersPlanController = new UsersPlanController();
+
 			if (path.matches("/UsersPlan")) {
-				if(StringUtils.equals( POST, httpMethod ))   return ResponseUtil.notFoundResponse(str);
+				if(StringUtils.equals( GET, httpMethod ))   return usersPlanController.getUserPlanByUserId(requestInfo);
 			}	
 		}
-		
+		logger.error("ERROR UNKNOWN PATH:" + str);
 		return ResponseUtil.notFoundResponse(str);
 	}
 

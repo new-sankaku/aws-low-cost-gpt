@@ -7,7 +7,7 @@ import com.yksc.model.db.ChatMessage;
 public class ChatRequest {
 	
 	private List<ChatMessage> chatMessageList ;
-	private String selectedModel;
+	private String selectedAiModel;
 	private String roomId;
 	
 	public List<ChatMessage> getChatMessageList() {
@@ -16,11 +16,12 @@ public class ChatRequest {
 	public void setChatMessageList(List<ChatMessage> chatMessageList) {
 		this.chatMessageList = chatMessageList;
 	}
-	public String getSelectedModel() {
-		return this.selectedModel;
+
+	public String getSelectedAiModel() {
+		return this.selectedAiModel;
 	}
-	public void setSelectedModel(String selectedModel) {
-		this.selectedModel = selectedModel;
+	public void setSelectedAiModel(String selectedAiModel) {
+		this.selectedAiModel = selectedAiModel;
 	}
 	public String getRoomId() {
 		return this.roomId;

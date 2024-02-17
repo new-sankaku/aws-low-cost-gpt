@@ -1,0 +1,59 @@
+Resources:
+  ChatRoomTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: ChatRoom
+      AttributeDefinitions:
+        - AttributeName: roomId
+          AttributeType: S
+        - AttributeName: ownerUserId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: roomId
+          KeyType: HASH
+        - AttributeName: ownerUserId
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      GlobalSecondaryIndexes:
+        - IndexName: ownerUserId-index
+          KeySchema:
+            - AttributeName: ownerUserId
+              KeyType: HASH
+          Projection:
+            ProjectionType: ALL
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+  ChatMessageTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: ChatMessage
+      AttributeDefinitions:
+        - AttributeName: messageId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: messageId
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+  UserSettingTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: UserSetting
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+        - AttributeName: darkMode
+          AttributeType: BOOL
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      BillingMode: PAY_PER_REQUEST
+      SSESpecification:
+        Enabled: true

@@ -1,14 +1,5 @@
 import axios from "axios";
 
-//sample code.
-//
-//import { getData, postData, putData, patchData, deleteData } from './ApiService';
-//const fetchUser = () => {
-//  getData('/USER/000001')
-//    .then(data => console.log('Fetched user data:', data))
-//    .catch(error => console.error('Fetching user data failed:', error));
-//};
-
 const API_ENDPOINT = process.env.VUE_APP_API_GATEWAY_ENDPOINT;
 
 function getAxiosConfig(method, path, data = null) {

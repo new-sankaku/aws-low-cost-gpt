@@ -16,6 +16,8 @@ import com.yksc.lambda.util.RequestRouterUtil;
 import com.yksc.lambda.util.ResponseUtil;
 import com.yksc.model.rest.RequestInfo;
 
+import software.amazon.awssdk.http.HttpStatusCode;
+
 public class LambdaFunctionHandler
 		implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
@@ -28,9 +30,13 @@ public class LambdaFunctionHandler
 			if( CognitoValidationUtil.isValidToken( requestInfo.getToken(), requestInfo.getEmail() ) ) {
 				
 				APIGatewayProxyResponseEvent result = RequestRouterUtil.next( requestInfo );
-				if( logger.isInfoEnabled() ) {
+				
+				if( logger.isInfoEnabled() && result.getStatusCode() == HttpStatusCode.OK) {
 					logger.info(LogUtil.objectToString(result));
+				}else if( logger.isInfoEnabled() && result.getStatusCode() != HttpStatusCode.OK ){
+					logger.error(LogUtil.objectToString(result));
 				}
+				
 				return result;
 			}
 		} catch (AuthenticationException e) {

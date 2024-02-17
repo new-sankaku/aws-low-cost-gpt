@@ -33,11 +33,13 @@ public class ChatCompletionsController {
 	@PostMapping
     public ResponseEntity<Object> generateText(@RequestHeader("user-mail-address") String userMailAddress, @RequestBody ChatRequest chatRequest) {
         List<ChatMessage> chatMessageList = chatRequest.getChatMessageList();
-        String selectedModel = chatRequest.getSelectedModel();
+        String selectedModel = chatRequest.getSelectedAiModel();
         
         ChatMessage userChatMessage =  chatMessageList.get(chatMessageList.size()-1);
         userChatMessage.setMessageId(IdGeneraterUtil.nextGuid());
 
+        boolean first = false;
+        
         //new Chat
         ChatRoom chatRoom = null;
         if( StringUtils.isBlank(chatRequest.getRoomId()) ) {
@@ -46,6 +48,7 @@ public class ChatCompletionsController {
     				.findFirst();
 
     		if( optionalUser.isPresent() ) {
+    			first = true;
     			chatRoom = new ChatRoom();
         		String guid = IdGeneraterUtil.nextGuid();
         		chatRoom.setRoomId( guid );
@@ -56,6 +59,7 @@ public class ChatCompletionsController {
         		chatRoom.setAiModel( "gpt-3.5-turbo-0125" );
         		chatRoom.setAiModelSource( "Open Ai" );
         		chatRoom.setSumTotal( 0 );
+        		
             	Data.chatRoomList.add( chatRoom );
     		}
         }else {
@@ -67,19 +71,29 @@ public class ChatCompletionsController {
         System.out.println("selectedModel:" + selectedModel);
         System.out.println("chatMessageList.size:" + chatMessageList.size());
         
-        boolean isRealChatGpt = false;
+        boolean isRealChatGpt = true;
         if( isRealChatGpt ) {
-    		long start = Calendar.getInstance().getTimeInMillis();
+        	if( first ) {
+        		chatRoom.setRoomTitle( thumbnailText( userChatMessage.getMessage() ) );
+        	}
+        	
+        	long start = Calendar.getInstance().getTimeInMillis();
         	String result = realChatGpt(chatMessageList, selectedModel);
         	ChatMessage chatMessage = new ChatMessage( IdGeneraterUtil.nextGuid(), "ai", result, new Date() );
         	long end = Calendar.getInstance().getTimeInMillis();
         	chatMessage.setResponseTime(start - end);
+        	
+        	System.out.println("new user message id:" + userChatMessage.getMessageId());
         	
         	Data.chatMessgaeMap.put(userChatMessage.getMessageId(), userChatMessage);
         	chatRoom.getChatMessageIds().add(userChatMessage.getMessageId());
 
         	Data.chatMessgaeMap.put(chatMessage.getMessageId(), chatMessage);
         	chatRoom.getChatMessageIds().add(chatMessage.getMessageId());
+        	
+        	chatMessage.setRoomTitle(chatRoom.getRoomTitle());
+        	chatMessage.setRoomId(chatRoom.getRoomId());
+        	
         	return ResponseEntity.ok( chatMessage  );
     	}else {
     		long start = Calendar.getInstance().getTimeInMillis();
@@ -107,15 +121,46 @@ public class ChatCompletionsController {
         	Data.chatMessgaeMap.put(chatMessage.getMessageId(), chatMessage);
         	chatRoom.getChatMessageIds().add(chatMessage.getMessageId());
 
+        	
+        	chatMessage.setRoomTitle(chatRoom.getRoomTitle());
+        	chatMessage.setRoomId(chatRoom.getRoomId());
+
     		return ResponseEntity.ok( chatMessage  );
         }
         
 		
 	}
 	
-	private String realChatGpt(List<ChatMessage> chatMessageList, String selectedModel ) {
-		String apiKey = "";
+	private String thumbnailText( String aiMessage  ) {
+		
+		aiMessage = "Please summarize in 20 characters or less. No explanation needed. Base your summary on the language of the message." + 
+		"\r\n" + aiMessage;
+		
+		String apiKey = System.getenv( "OPEN_AI_API_KEY" );
+		
+		List<com.theokanning.openai.completion.chat.ChatMessage> messages = new ArrayList<>();
+		messages.add( new com.theokanning.openai.completion.chat.ChatMessage(ChatMessageRole.USER.value(), aiMessage));
+		ChatCompletionRequest chatCompletionRequest = ChatCompletionRequest.builder().model("gpt-3.5-turbo-0125").maxTokens(10)
+				.messages(messages).build();
+		StringBuilder contentBuilder = new StringBuilder();
 
+		OpenAiService service = new OpenAiService(apiKey);
+		service.streamChatCompletion(chatCompletionRequest).doOnError(Throwable::printStackTrace)
+				.blockingForEach(chatCompletion -> {
+					for (ChatCompletionChoice choice : chatCompletion.getChoices()) {
+						com.theokanning.openai.completion.chat.ChatMessage message = choice.getMessage();
+						if (message != null && message.getContent() != null) {
+							contentBuilder.append(message.getContent());
+						}
+					}
+				});
+
+		return contentBuilder.toString();
+	}
+	
+	
+	private String realChatGpt(List<ChatMessage> chatMessageList, String selectedModel ) {
+		String apiKey = System.getenv( "OPEN_AI_API_KEY" );
 
 		OpenAiService service = new OpenAiService(apiKey);
 		List<com.theokanning.openai.completion.chat.ChatMessage> messages = new ArrayList<>();

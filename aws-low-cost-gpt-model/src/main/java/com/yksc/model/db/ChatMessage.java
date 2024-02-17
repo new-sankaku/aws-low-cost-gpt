@@ -95,4 +95,20 @@ public class ChatMessage {
 		this.token = token;
 	}
 
+	public String getRoomId() {
+		return this.roomId;
+	}
+
+	public void setRoomId(String roomId) {
+		this.roomId = roomId;
+	}
+
+	public String getRoomTitle() {
+		return this.roomTitle;
+	}
+
+	public void setRoomTitle(String roomTitle) {
+		this.roomTitle = roomTitle;
+	}
+
 }

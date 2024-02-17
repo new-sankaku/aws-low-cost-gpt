@@ -16,6 +16,7 @@ import com.yksc.model.rest.AiModel;
 @RequestMapping("/UsersPlan")
 public class UsersPlanController {
 
+	
 	@GetMapping
 	public ResponseEntity<Object> getUserPlanByUserId( @RequestHeader("user-mail-address") String userMailAddress ) {
 		//TODO all result.

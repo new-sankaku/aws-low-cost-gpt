@@ -27,14 +27,14 @@ export default route(function (/* { store, ssrContext } */) {
     ? createWebHistory
     : createWebHashHistory;
 
-  const Router = createRouter({
+  const router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
     routes,
 
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
 
-  Router.beforeEach((to, from, next) => {
+  router.beforeEach((to, from, next) => {
     console.log("Navigating to:", to.name);
 
     if (to.matched.some((record) => record.meta.requiresAuth)) {
@@ -48,5 +48,35 @@ export default route(function (/* { store, ssrContext } */) {
     }
   });
 
-  return Router;
+  router.afterEach((to) => {
+    const title = to.meta.title;
+
+    document.title = title;
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (!metaDescription) {
+      metaDescription = document.createElement("meta");
+      metaDescription.setAttribute("name", "description");
+      document.getElementsByTagName("head")[0].appendChild(metaDescription);
+    }
+
+    const structuredData = to.meta.structuredData;
+
+    if (structuredData) {
+      console.log("if (structuredData) is true");
+      document
+        .querySelectorAll('script[type="application/ld+json"]')
+        .forEach((elem) => {
+          elem.parentNode.removeChild(elem);
+        });
+
+      const script = document.createElement("script");
+      script.type = "application/ld+json";
+      script.textContent = JSON.stringify(structuredData);
+      document.head.appendChild(script);
+    } else {
+      console.log("if (structuredData) is false");
+    }
+  });
+
+  return router;
 });

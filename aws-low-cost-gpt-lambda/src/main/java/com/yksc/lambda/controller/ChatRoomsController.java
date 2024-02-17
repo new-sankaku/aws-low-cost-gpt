@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.Logger;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
@@ -19,37 +20,33 @@ import com.yksc.model.rest.RequestInfo;
 
 import software.amazon.awssdk.http.HttpStatusCode;
 
-public class ChatRoomController {
+public class ChatRoomsController {
 	private static final Logger logger = LoggerFactory.getLogger();
 
 	/**
-	 * 
+	 * not use.
 	 * @param requestInfo
-	 * @return ChatRoom
+	 * @return
 	 * @throws JsonProcessingException
 	 */
-	public APIGatewayProxyResponseEvent getChatRoomById( RequestInfo requestInfo ) throws JsonProcessingException {
-		String roomId = requestInfo.getPathParameters().get( PathParam.ROOM_ID );
-		if( roomId == null ) {
-			return ResponseUtil.notFoundResponse( "getChatRoomById:roomId == null" );
+	public APIGatewayProxyResponseEvent getChatRoomHistory( RequestInfo requestInfo ) throws JsonProcessingException {
+		String ownerUserId = requestInfo.getUserUUID();
+		if( StringUtils.isBlank(ownerUserId) ) {
+			return ResponseUtil.notFoundResponse( "getChatRoomHistory:ownerUserId isBlank" );
 		}
-		
 		ChatRoomRepository chatRoomRepo = new ChatRoomRepository();
-		ChatRoom chatRoom = chatRoomRepo.findById(roomId, requestInfo.getUserUUID());
-		if( chatRoom == null ) {
-			return ResponseUtil.notFoundResponse("getChatRoomById:chatRoom == null");
-		}
-		
-		return ResponseUtil.createResponseByOK(chatRoom );
+		List<ChatRoom> chatRoomList = chatRoomRepo.findByOwnerUserId(ownerUserId);
+
+		return ResponseUtil.createResponseByOK( chatRoomList );
 	}
 
 	/**
-	 * 
+	 * not use.
 	 * @param requestInfo
 	 * @return List<ChatMessage>
 	 * @throws JsonProcessingException
 	 */
-	public APIGatewayProxyResponseEvent getChatRoomMessageByRoomId( RequestInfo requestInfo  ) throws JsonProcessingException {
+	public APIGatewayProxyResponseEvent getChatRoomMessageById( RequestInfo requestInfo  ) throws JsonProcessingException {
 
 		String roomId = requestInfo.getPathParameters().get( PathParam.ROOM_ID );
 		if( roomId == null ) {
@@ -77,8 +74,9 @@ public class ChatRoomController {
 		return ResponseUtil.createResponseByOK(chatMessageList );
 	}
 
+	
 	/**
-	 * 
+	 * not use.
 	 * @param updateRoom
 	 * @return ChatRoom
 	 * @throws JsonProcessingException
@@ -89,8 +87,11 @@ public class ChatRoomController {
 		chatRoomRepo.update(updateRoom);
 		return ResponseUtil.createResponseByOK(updateRoom );
 	}
+	
+	
 
 	/**
+	 * not use.
 	 * ChatRoom
 	 * @param requestInfo
 	 * @return

@@ -12,11 +12,13 @@ import com.yksc.lambda.log.LoggerFactory;
 public class EnvironmentUtil {
 	private static final Logger logger = LoggerFactory.getLogger();
 
-	public static final String AWS_COGNITO_ACCESS_KEY = "AWS_COGNITO_ACCESS_KEY";
-	public static final String AWS_COGNITO_REGION = "AWS_COGNITO_REGION";
-	public static final String AWS_COGNITO_USER_POOL_ID = "AWS_COGNITO_USER_POOL_ID";
-	public static final String AWS_COGNITO_APP_CLIENT_ID = "AWS_COGNITO_APP_CLIENT_ID";
-	public static final String AWS_COGNITO_USER_NAME = "AWS_COGNITO_USER_NAME";
+	public static final String AWS_COGNITO_ACCESS_KEY 		= "AWS_COGNITO_ACCESS_KEY";
+	public static final String AWS_COGNITO_REGION 			= "AWS_COGNITO_REGION";
+	public static final String AWS_COGNITO_USER_POOL_ID 	= "AWS_COGNITO_USER_POOL_ID";
+	public static final String AWS_COGNITO_APP_CLIENT_ID 	= "AWS_COGNITO_APP_CLIENT_ID";
+	public static final String AWS_COGNITO_USER_NAME 		= "AWS_COGNITO_USER_NAME";
+
+	public static final String OPEN_AI_API_KEY 				= "OPEN_AI_API_KEY";
 
 	public static String getEnv( String envKey ) {
 		String envValue = System.getenv( envKey );

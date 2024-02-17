@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container login">
+    <div class="shadow-1 container login">
       <div
         class="q-pa-sm logo"
         style="
@@ -77,10 +77,9 @@
       <div class="external-link" style="text-align: center; margin-top: 20px">
         <a href="html/architecture.html" target="_blank">Architecture</a>
       </div>
-    </div>
-
-    <div class="svg-container">
-      <img src="../assets/saru.svg" alt="monkey" width="150" height="150" />
+      <div class="external-link" style="text-align: center; margin-top: 20px">
+        <router-link to="/MainTest">MainTest</router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -199,15 +198,14 @@ function findMatchingLocale(userLocale) {
 <style>
 .container.login {
   max-width: 400px;
-  margin: 20px auto; /* 上下に20px、左右は自動で中央揃え */
-  padding: 20px; /* 内側に余白を追加 */
+  margin: 20px auto;
+  padding: 20px;
 }
 
-/* 小さい画面（モバイルデバイス）用のスタイル */
 @media (max-width: 768px) {
   .container.login {
-    margin: 10px; /* モバイルデバイスでは余白を少し小さく */
-    padding: 10px; /* 内側の余白も調整 */
+    margin: 10px;
+    padding: 10px;
   }
 }
 
