@@ -56,7 +56,7 @@ public class ChatCompletionsController {
         		chatRoom.setRoomTitle( "include server" );
         		chatRoom.setCreateDate( new Date() );
         		chatRoom.setUpdateDate( new Date() );
-        		chatRoom.setAiModel( "gpt-3.5-turbo-0125" );
+        		chatRoom.setAiModel( selectedModel );
         		chatRoom.setAiModelSource( "Open Ai" );
         		chatRoom.setSumTotal( 0 );
         		

@@ -1,5 +1,13 @@
 <template>
   <q-page-container>
+    <div
+      v-if="isChatHistoryLoading"
+      class="flex flex-center"
+      style="height: 100vh; width: 100vw; position: absolute; left: 0; top: 0"
+    >
+      <q-spinner-pie size="100px" color="primary"></q-spinner-pie>
+    </div>
+
     <q-page class="page-container">
       <div
         v-for="(chatRoom, index) in chatRooms.rooms"
@@ -100,9 +108,12 @@ Separator space when viewed on minimap
 <script>
 import { getData, postData } from "./../api/RestService";
 import { ref, watch, inject, onMounted } from "vue";
+import { useQuasar, QSpinnerGears } from "quasar";
 
 export default {
   setup() {
+    const $q = useQuasar();
+
     const isLeftDrawerOpen = inject("isLeftDrawerOpen");
     const isRightDrawerOpen = inject("isRightDrawerOpen");
 
@@ -135,6 +146,9 @@ export default {
         return;
       }
 
+      console.log("isChatHistoryLoading then", isChatHistoryLoading.value);
+      isChatHistoryLoading.value = true;
+
       getData(`ChatRooms/Message/${roomId}`)
         .then((chatMessages) => {
           if (chatRooms.chatRoomHistorys[index]) {
@@ -155,6 +169,11 @@ export default {
           console.error("Error fetching chat messages:", error);
         })
         .finally(() => {
+          console.log(
+            "isChatHistoryLoading finally",
+            isChatHistoryLoading.value
+          );
+          isChatHistoryLoading.value = false;
           animateScroll();
         });
     };
@@ -186,8 +205,10 @@ export default {
     const scrollAreaRef = ref(null);
 
     const calculating = inject("calculating");
+    const isChatHistoryLoading = ref(false);
 
     return {
+      isChatHistoryLoading,
       calculating,
       animateScroll,
       fetchChatMessages,
@@ -257,10 +278,14 @@ export default {
       }
 
       if (inputField.trim() === "") return;
+
       this.chatRooms.chatRoomHistorys[index].push({
         message: inputField,
         sender: "user",
       });
+
+      this.animateScroll();
+
       this.inputFields[index] = "";
       this.isLoading = true;
       this.loadingCounter += 1;
@@ -297,6 +322,7 @@ export default {
       } catch (error) {
         console.error("Failed to send message:", error);
       } finally {
+        this.animateScroll();
         this.calculating.splice(index, 1, false);
         console.log("calculating " + index, this.calculating[index]);
 
@@ -439,7 +465,11 @@ textarea {
   right: 2%;
   z-index: 100;
 }
-
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 @media (max-width: 650px) {
   .mobile-none {
     display: none;

@@ -363,10 +363,14 @@
 </template>
 
 <script>
-import { computed, onBeforeUnmount, inject, ref } from "vue";
+import { watch, computed, onBeforeUnmount, inject, ref } from "vue";
+import { getData, postData } from "./../api/RestService";
+import { useQuasar, QSpinnerGears } from "quasar";
 
 export default {
   setup() {
+    const $q = useQuasar();
+
     const rightCarouselHeadPromptPosition = inject(
       "rightCarouselHeadPromptPosition"
     );
@@ -399,7 +403,60 @@ export default {
       clearTimeout(uploading.value);
     }
 
+    const rightDialogHeadPrompt = ref(false);
+    const rightDialogTailPrompt = ref(false);
+    const rightAccountSettings = ref(false);
+
     onBeforeUnmount(cleanUp);
+
+    const onDialogClose = () => {
+      const userData = {
+        headPromptList: [
+          rightCarouselHeadPromptText1.value,
+          rightCarouselHeadPromptText2.value,
+          rightCarouselHeadPromptText3.value,
+          rightCarouselHeadPromptText4.value,
+        ],
+        tailPromptList: [
+          rightCarouselTailPromptText1.value,
+          rightCarouselTailPromptText2.value,
+          rightCarouselTailPromptText3.value,
+          rightCarouselTailPromptText4.value,
+        ],
+        headPromptEnabled: isRightHeadPromptToggle.value,
+        tailPromptEnabled: isRightTailPromptToggle.value,
+      };
+
+      $q.notify({
+        spinner: true,
+        message: "Saving settings...",
+        timeout: 1500,
+      });
+      postData("UserSettings", userData)
+        .then((response) => {})
+        .catch((error) => {
+          $q.notify({
+            spinner: true,
+            message: "Saving error...",
+            timeout: 1500,
+          });
+          console.error("Error sending user settings:", error);
+        });
+    };
+
+    watch(rightDialogHeadPrompt, (newVal, oldVal) => {
+      if (!newVal && oldVal) {
+        onDialogClose();
+      } else {
+      }
+    });
+
+    watch(rightDialogTailPrompt, (newVal, oldVal) => {
+      if (!newVal && oldVal) {
+        onDialogClose();
+      } else {
+      }
+    });
 
     return {
       files,
@@ -437,9 +494,9 @@ export default {
       rightCarouselTailPromptText4,
       rightCarouselHeadPromptPosition,
       rightCarouselTailPromptPosition,
-      rightDialogHeadPrompt: ref(false),
-      rightDialogTailPrompt: ref(false),
-      rightAccountSettings: ref(false),
+      rightDialogHeadPrompt,
+      rightDialogTailPrompt,
+      rightAccountSettings,
       isRightHeadPromptToggle,
       isRightTailPromptToggle,
       isRightUseFileToggle,

@@ -16,9 +16,9 @@ import com.theokanning.openai.completion.chat.ChatMessageRole;
 import com.theokanning.openai.service.OpenAiService;
 import com.yksc.lambda.data.repository.ChatMessageRepository;
 import com.yksc.lambda.data.repository.ChatRoomRepository;
-import com.yksc.lambda.log.LogUtil;
 import com.yksc.lambda.log.LoggerFactory;
 import com.yksc.lambda.util.EnvironmentUtil;
+import com.yksc.lambda.util.JsonUtil;
 import com.yksc.lambda.util.ResponseUtil;
 import com.yksc.model.db.ChatMessage;
 import com.yksc.model.db.ChatRoom;
@@ -33,7 +33,7 @@ public class ChatCompletionsController {
     public APIGatewayProxyResponseEvent generateText(RequestInfo requestInfo ) throws JsonProcessingException {
     	
     	String body = requestInfo.getBody();
-		ChatRequest chatRequest = LogUtil.objectMapper.readValue(body, ChatRequest.class);
+		ChatRequest chatRequest = JsonUtil.objectMapper.readValue(body, ChatRequest.class);
     	
         List<ChatMessage> chatMessageList = chatRequest.getChatMessageList();
         String selectedModel = chatRequest.getSelectedAiModel();
@@ -84,8 +84,9 @@ public class ChatCompletionsController {
 
 	private String thumbnailText( String aiMessage  ) {
 		
-		aiMessage = "以下のメッセージを10文字以内で要約してください。要約はメッセージの言語に基づいてください。" + 
+		aiMessage = "Please summarize in 20 characters or less. No explanation needed. Base your summary on the language of the message." + 
 		"\r\n" + aiMessage;
+
 		
 		String apiKey = System.getenv( "OPEN_AI_API_KEY" );
 		

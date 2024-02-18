@@ -97,9 +97,9 @@ public class Data {
 		addUserSettings( user2 );
 		addUserSettings( testUser );
 
-		addDummyChatRoom( testUser.getUserId() );
-		addDummyChatRoom( testUser.getUserId() );
-		addDummyChatRoom( testUser.getUserId() );
+//		addDummyChatRoom( testUser.getUserId() );
+//		addDummyChatRoom( testUser.getUserId() );
+//		addDummyChatRoom( testUser.getUserId() );
 		
 		addAiModel();
 	}
@@ -215,6 +215,7 @@ public class Data {
 		Optional<User> optionalUser = usersMap.values().stream().filter( user -> StringUtils.equals(user.getEmail(), userMailAddress)).findFirst();
 		if( optionalUser.isPresent() ) {
 			User user = optionalUser.get();
+			userSetting.setUserId(user.getUserId());
 			userSettingMap.put(user.getUserId(), userSetting);
 			return userSetting;
 		}else {

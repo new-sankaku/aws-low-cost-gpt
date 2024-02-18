@@ -21,10 +21,14 @@
         color="black"
         v-model="selectedAiModel"
         :options="aiModelOptions"
+        :loading="isModelLoading"
         @update:modelValue="updateDollerValues"
       >
         <template v-slot:prepend>
           <q-icon name="psychology" color="white" style="width: 20px" />
+        </template>
+        <template v-slot:loading>
+          <q-spinner-pie color="white" class="q-mr-sm" />
         </template>
       </q-select>
 
@@ -59,6 +63,7 @@
 <script>
 import { computed, ref, inject } from "vue";
 import { getData, postData } from "./../api/RestService";
+import { useQuasar, QSpinnerGears } from "quasar";
 
 export default {
   mounted() {
@@ -71,6 +76,8 @@ export default {
   },
   methods: {
     fetchUserPlan() {
+      console.log("isModelLoading", this.isModelLoading);
+      this.isModelLoading = true;
       getData("UsersPlan")
         .then((data) => {
           this.modelsData = data;
@@ -83,9 +90,16 @@ export default {
             this.outDoller = data[0].outDoller;
             this.selectedAiModel = this.aiModelOptions[0];
           }
+
+          console.log("isModelLoading then", this.isModelLoading);
         })
         .catch((error) => {
+          console.log("isModelLoading catch", this.isModelLoading);
           console.error("Failed to fetch user plan:", error);
+        })
+        .finally(() => {
+          this.isModelLoading = false;
+          console.log("isModelLoading finally", this.isModelLoading);
         });
     },
     updateDollerValues() {
@@ -106,10 +120,14 @@ export default {
       });
       this.chatRooms.chatRoomHistorys.push([]);
       this.chatRooms.chatInputFields.push("");
-      this.activeLayer = this.layers.length - 1;
+      // this.activeChatRoomIndex = this.chatRooms.chatRoomHistorys.length - 1;
     },
   },
   setup() {
+    const $q = useQuasar();
+
+    const activeChatRoomIndex = inject("activeChatRoomIndex");
+
     const selectedAiModel = inject("selectedAiModel");
     const aiModelOptions = ref([]);
     const inputDoller = ref(0);
@@ -125,8 +143,10 @@ export default {
     });
 
     const chatRooms = inject("chatRooms");
-
+    const isModelLoading = ref(false);
     return {
+      isModelLoading,
+      activeChatRoomIndex,
       chatRooms,
       newChatButtonLabel,
       selectedAiModel,

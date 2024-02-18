@@ -40,20 +40,15 @@ Resources:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
   UserSettingTable:
-    Type: 'AWS::DynamoDB::Table'
+    Type: "AWS::DynamoDB::Table"
     Properties:
       TableName: UserSetting
       AttributeDefinitions:
         - AttributeName: userId
           AttributeType: S
-        - AttributeName: darkMode
-          AttributeType: BOOL
       KeySchema:
         - AttributeName: userId
           KeyType: HASH
       ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
-      BillingMode: PAY_PER_REQUEST
-      SSESpecification:
-        Enabled: true
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1

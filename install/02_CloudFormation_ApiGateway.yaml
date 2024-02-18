@@ -1,0 +1,830 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  MyApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: aws-low-cost-lambda-api_20240218
+      Description: An Low Cost REST API
+      FailOnWarnings: true
+
+
+  ChatCompletionsResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt MyApi.RootResourceId
+      PathPart: ChatCompletions
+      RestApiId: !Ref MyApi
+
+  ChatCompletionsResourceGet:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: GET
+      ResourceId: !Ref ChatCompletionsResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  ChatCompletionsResourcePost:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: POST
+      ResourceId: !Ref ChatCompletionsResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  ChatCompletionsResourceDelete:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: DELETE
+      ResourceId: !Ref ChatCompletionsResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  ChatCompletionsResourcePut:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: PUT
+      ResourceId: !Ref ChatCompletionsResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  ChatCompletionsResourceOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: OPTIONS
+      ResourceId: !Ref ChatCompletionsResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'PATCH,PUT,HEAD,DELETE,GET,POST,OPTIONS'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+
+  UsersPlanResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt MyApi.RootResourceId
+      PathPart: UsersPlan
+      RestApiId: !Ref MyApi
+
+  UsersPlanResourceGet:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: GET
+      ResourceId: !Ref UsersPlanResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  UsersPlanResourcePost:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: POST
+      ResourceId: !Ref UsersPlanResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  UsersPlanResourceDelete:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: DELETE
+      ResourceId: !Ref UsersPlanResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  UsersPlanResourcePut:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: PUT
+      ResourceId: !Ref UsersPlanResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  UsersPlanResourceOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: OPTIONS
+      ResourceId: !Ref UsersPlanResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'PATCH,PUT,HEAD,DELETE,GET,POST,OPTIONS'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+
+  ChatRoomsResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt MyApi.RootResourceId
+      PathPart: ChatRooms
+      RestApiId: !Ref MyApi
+
+  MessageResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref ChatRoomsResource
+      PathPart: Message
+      RestApiId: !Ref MyApi
+
+  MessageResourceGet:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: GET
+      ResourceId: !Ref MessageResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  MessageResourcePost:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: POST
+      ResourceId: !Ref MessageResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  MessageResourceDelete:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: DELETE
+      ResourceId: !Ref MessageResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  MessageResourcePut:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: PUT
+      ResourceId: !Ref MessageResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  MessageResourceOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: OPTIONS
+      ResourceId: !Ref MessageResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'PATCH,PUT,HEAD,DELETE,GET,POST,OPTIONS'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+            
+  RoomIdResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !Ref MessageResource
+      PathPart: "{roomId}"
+      RestApiId: !Ref MyApi
+
+
+  RoomIdResourceGet:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: GET
+      ResourceId: !Ref RoomIdResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  RoomIdResourcePost:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: POST
+      ResourceId: !Ref RoomIdResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  RoomIdResourceDelete:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: DELETE
+      ResourceId: !Ref RoomIdResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  RoomIdResourcePut:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: PUT
+      ResourceId: !Ref RoomIdResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  RoomIdResourceOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: OPTIONS
+      ResourceId: !Ref RoomIdResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'PATCH,PUT,HEAD,DELETE,GET,POST,OPTIONS'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  ChatRoomsResourceGet:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: GET
+      ResourceId: !Ref ChatRoomsResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  ChatRoomsResourcePost:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: POST
+      ResourceId: !Ref ChatRoomsResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  ChatRoomsResourceDelete:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: DELETE
+      ResourceId: !Ref ChatRoomsResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  ChatRoomsResourcePut:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: PUT
+      ResourceId: !Ref ChatRoomsResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  ChatRoomsResourceOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: OPTIONS
+      ResourceId: !Ref ChatRoomsResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'PATCH,PUT,HEAD,DELETE,GET,POST,OPTIONS'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  UserSettingsResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt MyApi.RootResourceId
+      PathPart: UserSettings
+      RestApiId: !Ref MyApi
+      
+  UserSettingsResourceGet:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: GET
+      ResourceId: !Ref UserSettingsResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  UserSettingsResourcePost:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: POST
+      ResourceId: !Ref UserSettingsResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  UserSettingsResourceDelete:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: DELETE
+      ResourceId: !Ref UserSettingsResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  UserSettingsResourcePut:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: PUT
+      ResourceId: !Ref UserSettingsResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:604393637753:function:aws-low-cost-gpt-lambda/invocations
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+  UserSettingsResourceOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: OPTIONS
+      ResourceId: !Ref UserSettingsResource
+      RestApiId: !Ref MyApi
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'PATCH,PUT,HEAD,DELETE,GET,POST,OPTIONS'"
+              method.response.header.Access-Control-Allow-Headers: "'user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+            method.response.header.Access-Control-Allow-Headers: true
+          ResponseModels:
+            application/json: 'Empty'
+
+
+
+  MyDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: 
+      - ChatCompletionsResourceGet
+      - ChatCompletionsResourcePost
+      - ChatCompletionsResourceOptions
+      - ChatCompletionsResourceDelete
+      - ChatCompletionsResourcePut
+      - UsersPlanResourceGet
+      - UsersPlanResourcePost
+      - UsersPlanResourceOptions
+      - UsersPlanResourceDelete
+      - UsersPlanResourcePut
+      - ChatRoomsResourceGet
+      - ChatRoomsResourcePost
+      - ChatRoomsResourceOptions
+      - ChatRoomsResourceDelete
+      - ChatRoomsResourcePut
+      - MessageResourceGet
+      - MessageResourcePost
+      - MessageResourceOptions
+      - MessageResourceDelete
+      - MessageResourcePut
+      - RoomIdResourceGet
+      - RoomIdResourcePost
+      - RoomIdResourceOptions
+      - RoomIdResourceDelete
+      - RoomIdResourcePut
+      - UserSettingsResourceGet
+      - UserSettingsResourcePost
+      - UserSettingsResourceOptions
+      - UserSettingsResourceDelete
+      - UserSettingsResourcePut
+    Properties:
+      RestApiId: !Ref MyApi
+      StageName: api
+
+Outputs:
+  ApiURL:
+    Description: URL of the API endpoint
+    Value: !Sub 'https://${MyApi}.execute-api.${AWS::Region}.amazonaws.com/api/'

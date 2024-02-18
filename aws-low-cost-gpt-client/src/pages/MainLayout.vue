@@ -14,10 +14,13 @@
 <script>
 import { getData } from "src/api/RestService";
 import { computed, reactive, provide, ref, onMounted } from "vue";
+import { useQuasar, QSpinnerGears } from "quasar";
 
 export default {
   components: {},
   setup() {
+    const $q = useQuasar();
+
     const isLeftDrawerOpen = ref(false);
     const isRightDrawerOpen = ref(false);
     provide("isLeftDrawerOpen", isLeftDrawerOpen);
@@ -55,21 +58,8 @@ export default {
     const rightCarouselTailPromptText4 = ref("");
 
     onMounted(() => {
-      getData("Users/UserSettings")
+      getData("UserSettings")
         .then((userSettings) => {
-          console.log("main userSettings:", userSettings);
-
-          //not use
-          console.log("main Dark Mode        :", userSettings.darkMode);
-          console.log(
-            "main headPromptEnabled:",
-            userSettings.headPromptEnabled
-          );
-          console.log(
-            "main tailPromptEnabled:",
-            userSettings.tailPromptEnabled
-          );
-
           isRightHeadPromptToggle.value = userSettings.headPromptEnabled;
           isRightTailPromptToggle.value = userSettings.tailPromptEnabled;
 

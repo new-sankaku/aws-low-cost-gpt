@@ -1,18 +1,24 @@
 <template>
   <q-drawer show-if-above v-model="clickLeftToggleDrawer" side="left" bordered>
-    <q-list bordered separator>
-      <q-item-label header>History</q-item-label>
+    <div
+      v-if="isChatRoomLoading"
+      class="q-pa-md flex flex-center"
+      style="height: 90vh"
+    >
+      <q-spinner-pie size="70px" color="primary" />
+    </div>
+
+    <q-list class="reverse-order" bordered separator>
       <q-item
         v-for="(chatRoom, index) in chatRooms.rooms"
         :key="'room-' + index"
         clickable
         v-ripple
         @click="showRoom(index)"
-        :class="{ 'active-item': index === localActiveIndex }"
+        :class="{ 'active-item': index === activeChatRoomIndex }"
       >
         <q-item-section>
           <q-item-label>{{ chatRoom.title }}</q-item-label>
-          <q-item-label caption>{{ chatRoom.aiModelName }}</q-item-label>
         </q-item-section>
         <q-item-section side top>
           <q-item-label caption>${{ chatRoom.sumTotal }}</q-item-label>
@@ -25,9 +31,12 @@
 <script>
 import { ref, watch, inject } from "vue";
 import { getData } from "./../api/RestService";
+import { useQuasar, QSpinnerGears } from "quasar";
 
 export default {
   setup() {
+    const $q = useQuasar();
+
     const isLeftDrawerOpen = inject("isLeftDrawerOpen");
 
     const chatRooms = inject("chatRooms");
@@ -35,21 +44,20 @@ export default {
       console.log("left watch chatRooms.rooms newChatRooms:", newChatRooms);
     });
 
-    const localActiveIndex = ref(0);
     const activeChatRoomIndex = inject("activeChatRoomIndex");
     const showRoom = (index) => {
-      localActiveIndex.value = index;
       activeChatRoomIndex.value = index;
     };
 
     const calculating = inject("calculating");
-
+    const isChatRoomLoading = ref(false);
     return {
+      isChatRoomLoading,
       calculating,
       clickLeftToggleDrawer: isLeftDrawerOpen,
       chatRooms,
       showRoom,
-      localActiveIndex,
+      activeChatRoomIndex,
     };
   },
   created() {
@@ -57,6 +65,8 @@ export default {
   },
   methods: {
     fetchChatRoomHistory() {
+      this.isChatRoomLoading = true;
+
       getData("ChatRooms")
         .then((chatRoomsFromServer) => {
           this.chatRooms.rooms.splice(
@@ -69,13 +79,19 @@ export default {
               sumTotal: room.sumTotal,
             }))
           );
-          this.chatRooms.chatRoomHistorys.push([]);
-          this.chatRooms.chatInputFields.push([]);
-          this.calculating.push(false);
+
+          chatRoomsFromServer.forEach(() => {
+            this.chatRooms.chatRoomHistorys.push([]);
+            this.chatRooms.chatInputFields.push([]);
+            this.calculating.push(false);
+          });
         })
         .catch((error) =>
           console.error("Error fetching chat room history:", error)
-        );
+        )
+        .finally(() => {
+          this.isChatRoomLoading = false;
+        });
       console.log("left fetchChatRoomHistory end");
     },
   },
@@ -87,6 +103,17 @@ export default {
   background-color: #c2cbff;
   color: rgb(0, 0, 0);
   font-weight: bold;
+}
+
+/* q-item の表示サイズを小さくするスタイル */
+.q-item {
+  font-size: 0.8rem; /* フォントサイズを小さくする */
+  padding: 8px 12px; /* パディングを調整して、全体的なサイズを小さくする */
+}
+
+.reverse-order {
+  display: flex;
+  flex-direction: column-reverse;
 }
 
 @media (max-width: 650px) {

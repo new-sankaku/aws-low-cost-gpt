@@ -24,6 +24,13 @@ public class ChatRoomsController {
 	@GetMapping
 	public ResponseEntity<Object> getChatRoomHistory( @RequestHeader("user-mail-address") String userMailAddress ) {
 
+		try {
+			//Pretending to work
+			Thread.sleep( 3000L );
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		System.out.println( "getChatRoomHistory : userMailAddress=" + userMailAddress );
 		List<ChatRoom> chatRoomList = Data.getChatRoomList( userMailAddress );
 		System.out.println( "getChatRoomHistory : chatRoomList size=" + chatRoomList.size() );
@@ -35,6 +42,13 @@ public class ChatRoomsController {
 	public ResponseEntity<Object> getChatRoomMessageById( @PathVariable String roomId ) {
 		List<ChatMessage> chatMessageList = Data.getChatRoomMessage( roomId );
 
+		try {
+			//Pretending to work
+			Thread.sleep( 3000L );
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		for (ChatMessage chatMessage : chatMessageList) {
         	System.out.println("get message id:" + chatMessage.getMessageId() + " @ " + chatMessage.getMessage());
 		}
@@ -54,6 +68,14 @@ public class ChatRoomsController {
 	 */
 	@PutMapping
 	public ResponseEntity<Object> updateChatRoom( @RequestBody ChatRoom updateRoom ) {
+		
+		try {
+			//Pretending to work
+			Thread.sleep( 3000L );
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		ChatRoom chatRoom = Data.getChatRoom( updateRoom.getRoomId() );
 		if( chatRoom != null ) {
 			chatRoom.setRoomTitle( updateRoom.getRoomTitle() );
@@ -70,6 +92,14 @@ public class ChatRoomsController {
 	 */
 	@DeleteMapping("/{roomId}")
 	public void deleteChatRoom( @PathVariable String roomId ) {
+		
+		try {
+			//Pretending to work
+			Thread.sleep( 3000L );
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		Data.chatRoomList.removeIf( chatRoom -> chatRoom.getRoomId().equals( roomId ) );
 	}
 	

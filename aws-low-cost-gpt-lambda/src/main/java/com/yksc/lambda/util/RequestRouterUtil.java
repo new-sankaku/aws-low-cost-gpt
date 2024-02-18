@@ -7,6 +7,7 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.yksc.lambda.controller.ChatCompletionsController;
 import com.yksc.lambda.controller.ChatRoomsController;
+import com.yksc.lambda.controller.UserSettingsController;
 import com.yksc.lambda.controller.UsersPlanController;
 import com.yksc.lambda.log.LoggerFactory;
 import com.yksc.model.rest.RequestInfo;
@@ -28,20 +29,24 @@ public class RequestRouterUtil {
 		String str = path + ":" + httpMethod;
 		logger.info("next:" + str);
 		
-		if( StringUtils.startsWith(path, "/ChatRooms") ) {
+		if( StringUtils.startsWith(path, "/UserSettings") ) {
+			UserSettingsController userSettingsController = new UserSettingsController();
+			
+			if(StringUtils.equals( GET, httpMethod ))    return userSettingsController.getUserSettings(requestInfo);
+			if(StringUtils.equals( POST, httpMethod ))    return userSettingsController.postUserSettings(requestInfo);
+			
+		}else if( StringUtils.startsWith(path, "/ChatRooms") ) {
 			ChatRoomsController chatRoomController = new ChatRoomsController();
 			
-			if (path.matches("/ChatRoom/Message/.+")) {
+			if (path.matches("/ChatRooms/Message/.+")) {
 				if(StringUtils.equals( GET, httpMethod ))    return chatRoomController.getChatRoomMessageById(requestInfo);
 			
-			}else if (path.matches("/ChatRoom/.+")) {
-				if(StringUtils.equals( GET, httpMethod ))    return chatRoomController.getChatRoomHistory(requestInfo);
+			}else if (path.matches("/ChatRooms/.+")) {
 				//TODO next version
 				if(StringUtils.equals( DELETE, httpMethod )) return ResponseUtil.notFoundResponse(str);
 			
-			}else if (path.matches("/ChatRoom")) {
-				//TODO next version
-				if(StringUtils.equals( PUT, httpMethod ))    return ResponseUtil.notFoundResponse(str);
+			}else if (path.matches("/ChatRooms")) {
+				if(StringUtils.equals( GET, httpMethod ))    return chatRoomController.getChatRoomHistory(requestInfo);
 			
 			}
 		}else if( StringUtils.startsWith(path, "/ChatCompletions") ) {

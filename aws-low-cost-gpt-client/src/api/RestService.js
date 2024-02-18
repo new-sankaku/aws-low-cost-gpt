@@ -1,6 +1,8 @@
 import axios from "axios";
+import { useQuasar, QSpinnerGears } from "quasar";
 
 const API_ENDPOINT = process.env.VUE_APP_API_GATEWAY_ENDPOINT;
+const $q = useQuasar();
 
 function getAxiosConfig(method, path, data = null) {
   const accessToken = localStorage.getItem("access-token");

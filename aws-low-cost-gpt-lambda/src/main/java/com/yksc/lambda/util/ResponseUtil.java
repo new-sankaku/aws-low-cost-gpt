@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yksc.lambda.log.LoggerFactory;
 
 public class ResponseUtil {
@@ -24,15 +23,13 @@ public class ResponseUtil {
 	
 	public static APIGatewayProxyResponseEvent createResponseByOK( Object object )
 			throws JsonProcessingException {
-		ObjectMapper objectMapper = new ObjectMapper();
-		String json = objectMapper.writeValueAsString( object );
+		String json = JsonUtil.objectMapper.writeValueAsString( object );
 		return createResponse( json, 200 );
 	}
 
 	public static APIGatewayProxyResponseEvent createResponseByOK( List<Object> objectList )
 			throws JsonProcessingException {
-		ObjectMapper objectMapper = new ObjectMapper();
-		String json = objectMapper.writeValueAsString( objectList );
+		String json = JsonUtil.objectMapper.writeValueAsString( objectList );
 
 		return createResponse( json, 200 );
 	}
@@ -40,15 +37,13 @@ public class ResponseUtil {
 	
 	public static APIGatewayProxyResponseEvent createResponse( Object object, int statusCode )
 			throws JsonProcessingException {
-		ObjectMapper objectMapper = new ObjectMapper();
-		String json = objectMapper.writeValueAsString( object );
+		String json = JsonUtil.objectMapper.writeValueAsString( object );
 		return createResponse( json, statusCode );
 	}
 
 	public static APIGatewayProxyResponseEvent createResponse( List<Object> objectList, int statusCode )
 			throws JsonProcessingException {
-		ObjectMapper objectMapper = new ObjectMapper();
-		String json = objectMapper.writeValueAsString( objectList );
+		String json = JsonUtil.objectMapper.writeValueAsString( objectList );
 
 		return createResponse( json, statusCode );
 	}
@@ -78,11 +73,11 @@ public class ResponseUtil {
 	    response.setStatusCode(httpCode);
 	    response.setBody(message);
 
-	    // CORSヘッダーを設定
+	    // CORS header.
 	    Map<String, String> corsHeaders = new HashMap<String, String>();
 	    corsHeaders.put("Content-Type", "application/json");
 	    corsHeaders.put("Access-Control-Allow-Origin", "*");
-	    corsHeaders.put("Access-Control-Allow-Methods", "PATCH,PUT,HEAD,DELETE,GET,POST,OPTIONS"); // 許可するHTTPメソッド
+	    corsHeaders.put("Access-Control-Allow-Methods", "PATCH,PUT,HEAD,DELETE,GET,POST,OPTIONS");
 	    corsHeaders.put("Access-Control-Allow-Headers", "user-token,access-token,user-mail-address,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token");
 	    response.setHeaders(corsHeaders);
 	    return response;

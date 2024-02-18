@@ -19,6 +19,14 @@ public class UsersPlanController {
 	
 	@GetMapping
 	public ResponseEntity<Object> getUserPlanByUserId( @RequestHeader("user-mail-address") String userMailAddress ) {
+		
+		try {
+			//Pretending to work
+			Thread.sleep( 3000L );
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		//TODO all result.
 		Collection<AiModel> aiModelList = Data.aiModelMap.values();
 		if( aiModelList != null ) {
