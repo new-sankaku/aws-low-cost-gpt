@@ -1,5 +1,7 @@
 package com.yksc.lambda.data.repository;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -31,8 +33,10 @@ public class ChatRoomRepository {
                 .withKeyConditionExpression("ownerUserId = :ownerUserId")
                 .withExpressionAttributeValues(Map.of(":ownerUserId", new AttributeValue().withS(ownerUserId)));
 
-        List<ChatRoom> results = DBUtil.dynamoDBMapper.query(ChatRoom.class, queryExpression);
-        return results;
+        List<ChatRoom> resultsAscList = new ArrayList<>(DBUtil.dynamoDBMapper.query(ChatRoom.class, queryExpression));
+        Collections.sort(resultsAscList, (chatRoom1, chatRoom2) -> chatRoom1.getCreateDate().compareTo(chatRoom2.getCreateDate()));
+
+        return resultsAscList;
     }
     
     public void delete(ChatRoom chatRoom) {

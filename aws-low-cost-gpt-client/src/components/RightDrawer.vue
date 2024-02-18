@@ -18,7 +18,7 @@
         color="primary"
         @click="rightDialogHeadPrompt = true"
       />
-      <q-toggle
+      <q-checkbox
         v-model="isRightHeadPromptToggle"
         color="primary"
         size="md"
@@ -36,7 +36,7 @@
         counter
         @click="rightDialogTailPrompt = true"
       />
-      <q-toggle
+      <q-checkbox
         v-model="isRightTailPromptToggle"
         color="primary"
         size="md"
@@ -91,7 +91,7 @@
         </template>
       </q-file>
 
-      <q-toggle
+      <q-checkbox
         disable
         hint="Disable"
         label="Use File"
@@ -100,7 +100,7 @@
         size="md"
         icon="keyboard_double_arrow_up"
       />
-      <q-toggle
+      <q-checkbox
         disable
         hint="Disable"
         label="Add File Name"

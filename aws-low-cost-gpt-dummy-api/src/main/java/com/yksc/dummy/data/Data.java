@@ -3,6 +3,7 @@ package com.yksc.dummy.data;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +50,9 @@ public class Data {
 			List<ChatRoom> chatRooms = Data.chatRoomList.stream()
 					.filter( chatRoom -> chatRoom.getOwnerUserId().equals( user.getUserId() ) )
 					.collect( Collectors.toList() );
-
+			
+			Collections.sort(chatRooms, (chatRoom1, chatRoom2) -> chatRoom1.getCreateDate().compareTo(chatRoom2.getCreateDate()));
+			
 			return chatRooms;
 		} else {
 			System.out.println("getChatRoomList is notFount user.");

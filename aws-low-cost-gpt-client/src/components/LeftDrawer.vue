@@ -41,7 +41,7 @@ export default {
 
     const chatRooms = inject("chatRooms");
     watch(chatRooms.rooms, (newChatRooms, oldChatRooms) => {
-      console.log("left watch chatRooms.rooms newChatRooms:", newChatRooms);
+      // console.log("left watch chatRooms.rooms newChatRooms:", newChatRooms);
     });
 
     const activeChatRoomIndex = inject("activeChatRoomIndex");
@@ -51,6 +51,7 @@ export default {
 
     const calculating = inject("calculating");
     const isChatRoomLoading = ref(false);
+
     return {
       isChatRoomLoading,
       calculating,
@@ -85,6 +86,8 @@ export default {
             this.chatRooms.chatInputFields.push([]);
             this.calculating.push(false);
           });
+
+          this.activeChatRoomIndex = this.chatRooms.rooms.length - 1;
         })
         .catch((error) =>
           console.error("Error fetching chat room history:", error)

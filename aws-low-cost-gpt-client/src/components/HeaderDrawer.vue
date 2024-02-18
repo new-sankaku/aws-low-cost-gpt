@@ -3,7 +3,7 @@
     <q-toolbar>
       <q-btn dense flat round icon="menu_open" @click="clickLeftToggleDrawer" />
       <img
-        class="push-left q-ml-sm"
+        class="mobile-none push-left q-ml-sm"
         width="20px"
         height="20px"
         src="../assets/logo_reverse.svg"
@@ -18,14 +18,20 @@
         standout
         rounded
         outlined
-        color="black"
+        :dense="isDense"
+        color="primary"
         v-model="selectedAiModel"
         :options="aiModelOptions"
         :loading="isModelLoading"
         @update:modelValue="updateDollerValues"
       >
         <template v-slot:prepend>
-          <q-icon name="psychology" color="white" style="width: 20px" />
+          <q-icon
+            class="mobile-none"
+            name="psychology"
+            color="white"
+            style="width: 20px"
+          />
         </template>
         <template v-slot:loading>
           <q-spinner-pie color="white" class="q-mr-sm" />
@@ -40,6 +46,7 @@
         size="12px"
         outline
         shadow
+        :dense="isDense"
         rounded
         icon="post_add"
         :label="newChatButtonLabel"
@@ -61,7 +68,7 @@
 </template>
 
 <script>
-import { computed, ref, inject } from "vue";
+import { onMounted, onUnmounted, computed, ref, inject } from "vue";
 import { getData, postData } from "./../api/RestService";
 import { useQuasar, QSpinnerGears } from "quasar";
 
@@ -120,7 +127,7 @@ export default {
       });
       this.chatRooms.chatRoomHistorys.push([]);
       this.chatRooms.chatInputFields.push("");
-      // this.activeChatRoomIndex = this.chatRooms.chatRoomHistorys.length - 1;
+      this.activeChatRoomIndex = this.chatRooms.chatRoomHistorys.length - 1;
     },
   },
   setup() {
@@ -144,7 +151,23 @@ export default {
 
     const chatRooms = inject("chatRooms");
     const isModelLoading = ref(false);
+
+    const windowWidth = ref(window.innerWidth);
+    const isDense = computed(() => {
+      return windowWidth.value <= 650;
+    });
+    function onResize() {
+      windowWidth.value = window.innerWidth;
+    }
+    onMounted(() => {
+      window.addEventListener("resize", onResize);
+    });
+    onUnmounted(() => {
+      window.removeEventListener("resize", onResize);
+    });
+
     return {
+      isDense,
       isModelLoading,
       activeChatRoomIndex,
       chatRooms,

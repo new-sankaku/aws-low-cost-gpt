@@ -186,6 +186,7 @@ export default {
       });
     });
 
+    const isChatHistoryLoading = inject("isChatHistoryLoading");
     const activeChatRoomIndex = inject("activeChatRoomIndex");
     watch(activeChatRoomIndex, (newValue, oldValue) => {
       fetchChatMessages(newValue);
@@ -205,7 +206,6 @@ export default {
     const scrollAreaRef = ref(null);
 
     const calculating = inject("calculating");
-    const isChatHistoryLoading = ref(false);
 
     return {
       isChatHistoryLoading,

@@ -163,6 +163,9 @@ export default {
     const calculating = reactive([]);
     provide("calculating", calculating);
 
+    const isChatHistoryLoading = ref(false);
+    provide("isChatHistoryLoading", isChatHistoryLoading);
+
     return {};
   },
 };
