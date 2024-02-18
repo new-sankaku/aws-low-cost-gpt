@@ -42,10 +42,10 @@ export default {
     provide("rightCarouselTailPromptPosition", rightCarouselTailPromptPosition);
 
     /** right view, prompt toggle. */
-    const isRightHeadPromptToggle = ref(true);
-    const isRightTailPromptToggle = ref(false);
-    provide("isRightHeadPromptToggle", isRightHeadPromptToggle);
-    provide("isRightTailPromptToggle", isRightTailPromptToggle);
+    const isRightHeadPromptCheckBox = ref(true);
+    const isRightTailPromptCheckBox = ref(false);
+    provide("isRightHeadPromptCheckBox", isRightHeadPromptCheckBox);
+    provide("isRightTailPromptCheckBox", isRightTailPromptCheckBox);
 
     /** right view, carouse slide text. */
     const rightCarouselHeadPromptText1 = ref("");
@@ -60,8 +60,8 @@ export default {
     onMounted(() => {
       getData("UserSettings")
         .then((userSettings) => {
-          isRightHeadPromptToggle.value = userSettings.headPromptEnabled;
-          isRightTailPromptToggle.value = userSettings.tailPromptEnabled;
+          isRightHeadPromptCheckBox.value = userSettings.headPromptEnabled;
+          isRightTailPromptCheckBox.value = userSettings.tailPromptEnabled;
 
           userSettings.headPromptList.forEach((prompt, index) => {
             if (index == 0) {
@@ -140,12 +140,12 @@ export default {
     provide("currentHeadPromptText", currentHeadPromptText);
     provide("currentTailPromptText", currentTailPromptText);
 
-    const inputFiles = ref(null);
-    const isRightUseFileToggle = ref(false);
-    const isRightAddFileNameToggle = ref(false);
-    provide("inputFiles", inputFiles);
-    provide("isRightUseFileToggle", isRightUseFileToggle);
-    provide("isRightAddFileNameToggle", isRightAddFileNameToggle);
+    const inputRightFiles = ref(null);
+    const isRightUseFileCheckBox = ref(false);
+    const isRightAddFileNameCheckBox = ref(false);
+    provide("inputRightFiles", inputRightFiles);
+    provide("isRightUseFileCheckBox", isRightUseFileCheckBox);
+    provide("isRightAddFileNameCheckBox", isRightAddFileNameCheckBox);
 
     const activeChatRoomIndex = ref(0);
 

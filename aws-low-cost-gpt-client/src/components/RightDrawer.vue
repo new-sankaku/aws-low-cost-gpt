@@ -19,7 +19,7 @@
         @click="rightDialogHeadPrompt = true"
       />
       <q-checkbox
-        v-model="isRightHeadPromptToggle"
+        v-model="isRightHeadPromptCheckBox"
         color="primary"
         size="md"
         icon="keyboard_double_arrow_up"
@@ -37,7 +37,7 @@
         @click="rightDialogTailPrompt = true"
       />
       <q-checkbox
-        v-model="isRightTailPromptToggle"
+        v-model="isRightTailPromptCheckBox"
         color="primary"
         size="md"
         icon="keyboard_double_arrow_down"
@@ -95,7 +95,7 @@
         disable
         hint="Disable"
         label="Use File"
-        v-model="isRightUseFileToggle"
+        v-model="isRightUseFileCheckBox"
         color="primary"
         size="md"
         icon="keyboard_double_arrow_up"
@@ -104,7 +104,7 @@
         disable
         hint="Disable"
         label="Add File Name"
-        v-model="isRightAddFileNameToggle"
+        v-model="isRightAddFileNameCheckBox"
         color="primary"
         size="md"
         icon="keyboard_double_arrow_up"
@@ -389,11 +389,11 @@ export default {
     const rightCarouselTailPromptText3 = inject("rightCarouselTailPromptText3");
     const rightCarouselTailPromptText4 = inject("rightCarouselTailPromptText4");
 
-    const isRightHeadPromptToggle = inject("isRightHeadPromptToggle");
-    const isRightTailPromptToggle = inject("isRightTailPromptToggle");
+    const isRightHeadPromptCheckBox = inject("isRightHeadPromptCheckBox");
+    const isRightTailPromptCheckBox = inject("isRightTailPromptCheckBox");
 
-    const isRightUseFileToggle = inject("isRightUseFileToggle");
-    const isRightAddFileNameToggle = inject("isRightAddFileNameToggle");
+    const isRightUseFileCheckBox = inject("isRightUseFileCheckBox");
+    const isRightAddFileNameCheckBox = inject("isRightAddFileNameCheckBox");
 
     const files = ref(null);
     const uploadProgress = ref([]);
@@ -423,8 +423,8 @@ export default {
           rightCarouselTailPromptText3.value,
           rightCarouselTailPromptText4.value,
         ],
-        headPromptEnabled: isRightHeadPromptToggle.value,
-        tailPromptEnabled: isRightTailPromptToggle.value,
+        headPromptEnabled: isRightHeadPromptCheckBox.value,
+        tailPromptEnabled: isRightTailPromptCheckBox.value,
       };
 
       $q.notify({
@@ -497,10 +497,10 @@ export default {
       rightDialogHeadPrompt,
       rightDialogTailPrompt,
       rightAccountSettings,
-      isRightHeadPromptToggle,
-      isRightTailPromptToggle,
-      isRightUseFileToggle,
-      isRightAddFileNameToggle,
+      isRightHeadPromptCheckBox,
+      isRightTailPromptCheckBox,
+      isRightUseFileCheckBox,
+      isRightAddFileNameCheckBox,
     };
   },
   methods: {

@@ -21,6 +21,13 @@
             : 'double-drawer-closed'
         }`"
       >
+        <!-- <div
+          class="flex flex-center"
+          style="height: 50vh; width: 50vw; position: absolute; left: 0; top: 0"
+        >
+          <q-spinner-pie size="100px" color="primary"></q-spinner-pie>
+        </div> -->
+
         <q-scroll-area
           ref="scrollAreaRef"
           :thumb-style="thumbStyle"
@@ -194,11 +201,11 @@ export default {
 
     const selectedAiModel = inject("selectedAiModel");
 
-    const isRightHeadPromptToggle = inject("isRightHeadPromptToggle");
-    const isRightTailPromptToggle = inject("isRightTailPromptToggle");
+    const isRightHeadPromptCheckBox = inject("isRightHeadPromptCheckBox");
+    const isRightTailPromptCheckBox = inject("isRightTailPromptCheckBox");
 
-    const isRightUseFileToggle = inject("isRightUseFileToggle");
-    const isRightAddFileNameToggle = inject("isRightAddFileNameToggle");
+    const isRightUseFileCheckBox = inject("isRightUseFileCheckBox");
+    const isRightAddFileNameCheckBox = inject("isRightAddFileNameCheckBox");
 
     const currentHeadPromptText = inject("currentHeadPromptText");
     const currentTailPromptText = inject("currentTailPromptText");
@@ -217,10 +224,10 @@ export default {
       scrollAreaRef,
       currentHeadPromptText,
       currentTailPromptText,
-      isRightHeadPromptToggle,
-      isRightTailPromptToggle,
-      isRightUseFileToggle,
-      isRightAddFileNameToggle,
+      isRightHeadPromptCheckBox,
+      isRightTailPromptCheckBox,
+      isRightUseFileCheckBox,
+      isRightAddFileNameCheckBox,
 
       selectedAiModel,
       localActiveIndex: activeChatRoomIndex,
@@ -270,10 +277,10 @@ export default {
     async sendMessage(index) {
       let inputField = this.inputFields[index];
 
-      if (this.isRightHeadPromptToggle) {
+      if (this.isRightHeadPromptCheckBox) {
         inputField = this.currentHeadPromptText + "\r\n" + inputField;
       }
-      if (this.isRightTailPromptToggle) {
+      if (this.isRightTailPromptCheckBox) {
         inputField = inputField + "\r\n" + this.currentTailPromptText;
       }
 
